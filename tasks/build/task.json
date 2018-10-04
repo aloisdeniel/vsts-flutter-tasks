@@ -1,0 +1,53 @@
+{
+    "id": "X",
+    "name": "FlutterBuild",
+    "friendlyName": "Flutter",
+    "description": "Build a Flutter application project.",
+    "helpMarkDown": "[More Information](https://go.microsoft.com/fwlink/?LinkID=613747)",
+    "category": "Build",
+    "visibility": [
+        "Build"
+    ],
+    "author": "Aloïs Deniel",
+    "version": {
+        "Major": 0,
+        "Minor": 0,
+        "Patch": 1
+    },
+    "groups": [],
+    "instanceNameFormat": "Flutter Build $(platform)",
+    "inputs": [
+        {
+            "name": "platform",
+            "type": "pickList",
+            "label": "Platform",
+            "defaultValue": "apk",
+            "helpMarkDown": "The target platform of your application.",
+            "required": "true",
+            "properties": {
+                "EditableOptions": "False"
+            },
+            "options": {
+                "ios": "iOS",
+                "apk": "Android"
+            }
+        },
+        {
+            "name": "projectPath",
+            "type": "filePath",
+            "label": "Path to the project folder or pubspec.yaml",
+            "defaultValue": "**/pubspec.yaml",
+            "helpMarkDown": "The path to the project folder or pubspec.yaml",
+            "required": "true"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "nugetcommandmain.js",
+            "argumentFormat": ""
+        }
+    },
+    "messages": {
+
+    }
+}

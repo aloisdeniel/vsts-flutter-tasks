@@ -1,0 +1,25 @@
+{
+  "name": "flutterinstall",
+  "version": "1.0.0",
+  "description": "Flutter Install Build Task",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aloisdeniel/vsts-flutter-tasks.git"
+  },
+  "author": "Aloïs Deniel",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aloisdeniel/vsts-flutter-tasks/issues"
+  },
+  "homepage": "https://github.com/aloisdeniel/vsts-flutter-tasks#readme",
+  "dependencies": {
+    "vsts-task-lib": "2.7.0",
+    "vsts-task-tool-lib": "*",
+    "request-promise": "*",
+    "request": "*"
+  }
+}

@@ -1,0 +1,78 @@
+{
+    "manifestVersion": 1,
+    "id": "vsts-flutter",
+    "version": "1.0.{patch}",
+    "name": "Flutter",
+    "description": "Flutter extension for Azure DevOps",
+    "publisher": "aloisdeniel",
+    "public": true,
+    "targets": [
+        {
+            "id": "Microsoft.VisualStudio.Services.Cloud"
+        }
+    ],
+    "categories": [
+        "Build and release"
+    ],
+    "icons": {
+        "default": "icon.png"
+    },
+    "screenshots": [],
+    "content": {
+        "details": {
+            "path": "DETAILS.md"
+        },
+        "license": {
+            "path": "LICENSE"
+        }
+    },
+    "links": {
+        "support": {
+            "uri": "https://github.com/aloisdeniel/vsts-flutter-tasks/issues"
+        }
+    },
+    "repository": {
+        "type": "git",
+        "uri": "https://github.com/aloisdeniel/vsts-flutter-tasks"
+    },
+    "tags": [
+        "flutter",
+        "mobile",
+        "ios",
+        "android"
+    ],
+    "files": [
+        {
+            "path": "tasks/install"
+        },
+        {
+            "path": "tasks/build"
+        },
+        {
+            "path": "images",
+            "addressable": true
+        }
+    ],
+    "contributions": [
+        {
+            "id": "flutter-install",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/install"
+            }
+        },
+        {
+            "id": "flutter-build",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/build"
+            }
+        }
+    ]
+}

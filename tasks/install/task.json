@@ -1,0 +1,55 @@
+{
+    "id": "X",
+    "name": "FlutterInstall",
+    "friendlyName": "Flutter Install",
+    "description": "Install the Flutter environment.",
+    "helpMarkdown": "For more information, take a look at the Flutter [documentation](https://flutter.io)",
+    "category": "Tool",
+    "author": "Aloïs Deniel",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Flutter Install",
+    "inputs": [
+        {
+            "name": "channel",
+            "type": "pickList",
+            "label": "Channel",
+            "defaultValue": "beta",
+            "required": true,
+            "helpMarkDown": "The build release channels (https://github.com/flutter/flutter/wiki/Flutter-build-release-channels).",
+            "options": {
+                "beta": "Beta",
+                "dev": "Dev"
+            }
+        },
+        {
+            "name": "version",
+            "type": "pickList",
+            "label": "Version",
+            "defaultValue": true,
+            "required": true,
+            "helpMarkDown": "Use the latest version of the Flutter SDK or a custom one.",
+            "options": {
+                "latest": "Latest",
+                "custom": "Custom version"
+            }
+        },
+        {
+            "name": "customVersion",
+            "type": "string",
+            "label": "Custom version (semver)",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "The version of the SDK to use (in a <M>.<m>.<p> semver format, from (https://flutter.io/sdk-archive/).",
+            "visibleRule": "version = custom"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}
