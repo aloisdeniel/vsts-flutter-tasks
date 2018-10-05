@@ -1,18 +1,18 @@
 {
     "manifestVersion": 1,
-    "id": "vsts-flutter",
-    "version": "1.0.0",
+    "id": "flutter",
+    "version": "0.1.0",
     "name": "Flutter",
     "description": "Flutter extension for Azure DevOps",
     "publisher": "aloisdeniel",
-    "public": true,
+    "public": false,
     "targets": [
         {
-            "id": "Microsoft.VisualStudio.Services.Cloud"
+            "id": "Microsoft.VisualStudio.Services"
         }
     ],
     "categories": [
-        "Build and release"
+        "Pipelines"
     ],
     "icons": {
         "default": "icon.png"
