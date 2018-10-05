@@ -1,5 +1,5 @@
 {
-    "id": "X",
+    "id": "10a2efb1-b922-4849-81de-bccd2537ccc1",
     "name": "FlutterBuild",
     "friendlyName": "Flutter",
     "description": "Build a Flutter application project.",
@@ -15,39 +15,83 @@
         "Patch": 1
     },
     "groups": [],
-    "instanceNameFormat": "Flutter Build $(platform)",
+    "instanceNameFormat": "Flutter Build $(target)",
     "inputs": [
         {
-            "name": "platform",
+            "name": "target",
             "type": "pickList",
-            "label": "Platform",
+            "label": "Target platform",
             "defaultValue": "apk",
             "helpMarkDown": "The target platform of your application.",
-            "required": "true",
-            "properties": {
-                "EditableOptions": "False"
-            },
+            "required": true,
             "options": {
                 "ios": "iOS",
                 "apk": "Android"
             }
         },
         {
-            "name": "projectPath",
+            "name": "projectDirectory",
             "type": "filePath",
-            "label": "Path to the project folder or pubspec.yaml",
-            "defaultValue": "**/pubspec.yaml",
-            "helpMarkDown": "The path to the project folder or pubspec.yaml",
-            "required": "true"
+            "label": "Path to the project folder",
+            "defaultValue": "",
+            "helpMarkDown": "The path to the project folder (which contains the `pubspec.yaml`)",
+            "required": true
+        },
+        {
+            "name": "buildNumber",
+            "type": "string",
+            "label": "Package build number",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Overrides the build number into the application manifest."
+        },
+        {
+            "name": "buildName",
+            "type": "string",
+            "label": "Package build name",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Overrides the package name (i.e. `com.fabrikam.stocks`) into the application manifest."
+        },
+        {
+            "name": "apkTargetPlatform",
+            "type": "pickList",
+            "label": "Target platform architecture",
+            "defaultValue": "android-arm",
+            "required": false,
+            "helpMarkDown": "Sets the target android platform architecture",
+            "visibleRule": "target = apk",
+            "options": {
+                "android-arm": "Arm",
+                "android-arm64": "Arm64"
+            }
+        },
+        {
+            "name": "iosTargetPlatform",
+            "type": "pickList",
+            "label": "Target platform architecture",
+            "defaultValue": "device",
+            "required": false,
+            "helpMarkDown": "Sets the target iOS platform architecture",
+            "visibleRule": "target = ios",
+            "options": {
+                "device": "Device",
+                "simulator": "Simulator"
+            }
+        },
+        {
+            "name": "iosCodesign",
+            "type": "boolean",
+            "label": "Codesign application bundle",
+            "defaultValue": "true",
+            "required": false,
+            "helpMarkDown": "Indicates whether the application bundle should be codesigned.",
+            "visibleRule": "target = ios"
         }
     ],
     "execution": {
         "Node": {
-            "target": "nugetcommandmain.js",
-            "argumentFormat": ""
+            "target": "index.js"
         }
-    },
-    "messages": {
-
     }
 }

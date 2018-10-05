@@ -1,7 +1,7 @@
 {
     "manifestVersion": 1,
     "id": "vsts-flutter",
-    "version": "1.0.{patch}",
+    "version": "1.0.0",
     "name": "Flutter",
     "description": "Flutter extension for Azure DevOps",
     "publisher": "aloisdeniel",
@@ -20,7 +20,7 @@
     "screenshots": [],
     "content": {
         "details": {
-            "path": "DETAILS.md"
+            "path": "README.md"
         },
         "license": {
             "path": "LICENSE"
