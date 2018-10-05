@@ -12,7 +12,8 @@ function assertDirectory(path: string) {
 }
 
 // ENV
-const tempPath = path.join(__dirname, "..", "..", "..", "temp");
+const rootPath = path.join(__dirname, "..", "..", "..");
+const tempPath = path.join(rootPath, "temp");
 const agentPath = path.join(tempPath, "agent");
 const dropPath = path.join(tempPath, "drop");
 process.env["BUILD_BUILDNUMBER"] = "1";
@@ -30,7 +31,7 @@ process.env["FlutterToolPath"] = path.join(agentPath, "tools", "Flutter", "0.9.6
 runner.setInput("target", "apk");
 runner.setInput("buildName", "com.aloisdeniel.vsts");
 runner.setInput("buildNumber", "12");
-runner.setInput("projectDirectory", path.join(tempPath, "sample_project"));
+runner.setInput("projectDirectory", path.join(rootPath, "sample_project"));
 runner.setInput("outputDirectory", dropPath);
 
 runner.run(true);
