@@ -1,7 +1,7 @@
 {
     "id": "10a2efb1-b922-4849-81de-bccd2537ccc1",
     "name": "FlutterBuild",
-    "friendlyName": "Flutter",
+    "friendlyName": "Flutter Build",
     "description": "Build a Flutter application project.",
     "helpMarkDown": "[More Information](https://go.microsoft.com/fwlink/?LinkID=613747)",
     "category": "Build",

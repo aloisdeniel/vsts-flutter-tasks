@@ -19,21 +19,18 @@ function main() {
         if (!flutterPath) {
             throw new Error(`The '${FLUTTER_TOOL_PATH_ENV_VAR}' environment variable must be set before using this task (you can use 'flutterinstall' task).`);
         }
-        // 2. Clean if requested
-        task.debug(`Cleaning`);
-        yield clean(flutterPath);
-        // 3. Get target
+        // 2. Get target
         let target = task.getInput('target', true);
-        // 4. Move current working directory to project
+        // 3. Move current working directory to project
         let projectDirectory = task.getPathInput('projectDirectory', false, false);
         if (projectDirectory) {
             task.debug(`Moving to ${projectDirectory}`);
             task.cd(projectDirectory);
         }
-        // 5. Get common input
+        // 4. Get common input
         let buildName = task.getInput('buildName', false);
         let buildNumber = task.getInput('buildNumber', false);
-        // 6. Builds
+        // 5. Builds
         if (target === "all" || target === "ios") {
             let targetPlatform = task.getInput('iosTargetPlatform', false);
             let codesign = task.getBoolInput('iosCodesign', false);
