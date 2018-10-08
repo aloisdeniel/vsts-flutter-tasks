@@ -16,7 +16,7 @@ Add the tasks to your build definition.
 
 ### Install
 
-![https://raw.githubusercontent.com/aloisdeniel/vsts-flutter-tasks/master/images/step_install.png]()
+![](https://raw.githubusercontent.com/aloisdeniel/vsts-flutter-tasks/master/images/step_install.png)
 
 Installs the [Flutter SDK](https://flutter.io/sdk-archive/) onto the running agent if not already installed. Then uses it for following tasks.
 
@@ -26,7 +26,7 @@ Installs the [Flutter SDK](https://flutter.io/sdk-archive/) onto the running age
 
 ### Build
 
-![https://raw.githubusercontent.com/aloisdeniel/vsts-flutter-tasks/master/images/step_build.png]()
+![](https://raw.githubusercontent.com/aloisdeniel/vsts-flutter-tasks/master/images/step_build.png)
 
 Build the given mobile application project. You must call the `Flutter Install` task before, or set a `FlutterToolPath` environment that points to your `flutter/bin` folder before execution. All the application bundles are created into the `build/outputs` folder of your project.
 
@@ -40,7 +40,7 @@ Build the given mobile application project. You must call the `Flutter Install` 
 
 ### Test
 
-![https://raw.githubusercontent.com/aloisdeniel/vsts-flutter-tasks/master/images/step_test.png]()
+![](https://raw.githubusercontent.com/aloisdeniel/vsts-flutter-tasks/master/images/step_test.png)
 
 Launch tests and publish a report as build test results.
 
