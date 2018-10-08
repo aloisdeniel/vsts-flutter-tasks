@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<testsuites>
+  <testsuite name="widget_test" timestamp="2018-10-08T12:48:00.355Z" errors="0" skipped="0" failures="1" tests="3">
+    <testcase name="Counter increments smoke test" classname="Counter increments smoke test" time="0.043.43"/>
+    <testcase name="Other test" classname="Other test" time="0.056.56"/>
+    <testcase name="And another test [E]" classname="And another test [E]" time="0.0">
+      <failure type="FlutterError"/>
+    </testcase>
+  </testsuite>
+</testsuites>

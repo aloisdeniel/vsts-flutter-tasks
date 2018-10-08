@@ -25,7 +25,7 @@ assertDirectory(process.env["AGENT_BUILDDIRECTORY"] = path.join(agentPath, "buil
 //let tmr = require('vsts-task-lib/mock-toolrunner');
 //runner.registerMock('vsts-task-lib/toolrunner', tmr);
 
-runner.setInput("channel", "dev");
+runner.setInput("channel", "beta");
 runner.setInput("version", "latest");
 
 runner.run(true);

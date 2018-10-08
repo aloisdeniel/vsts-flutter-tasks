@@ -9,39 +9,35 @@ const FLUTTER_EXE_RELATIVEPATH = 'flutter/bin';
 const FLUTTER_TOOL_PATH_ENV_VAR: string = 'FlutterToolPath';
 
 async function main(): Promise<void> {
-	try {
-		// 1. Getting current platform identifier
-		let arch = findArchitecture();
+	// 1. Getting current platform identifier
+	let arch = findArchitecture();
 
-		// 2. Building version spec
-		let channel = task.getInput('channel', true);
-		let version = task.getInput('version', true);
-		let semVer = task.getInput('customVersion', false);
-		if (version === 'latest' || semVer === "")
-			semVer = await findLatestSdkVersion(channel, arch);
-		let versionSpec = `${semVer}-${channel}`;
+	// 2. Building version spec
+	let channel = task.getInput('channel', true);
+	let version = task.getInput('version', true);
+	let semVer = task.getInput('customVersion', false);
+	if (version === 'latest' || semVer === "")
+		semVer = await findLatestSdkVersion(channel, arch);
+	let versionSpec = `${semVer}-${channel}`;
 
-		// 3. Check if already available
-		task.debug(`Trying to get (${FLUTTER_TOOL_NAME},${versionSpec}, ${arch}) tool from local cache`);
-		let toolPath = tool.findLocalTool(FLUTTER_TOOL_NAME, versionSpec, arch);
+	// 3. Check if already available
+	task.debug(`Trying to get (${FLUTTER_TOOL_NAME},${versionSpec}, ${arch}) tool from local cache`);
+	let toolPath = tool.findLocalTool(FLUTTER_TOOL_NAME, versionSpec, arch);
 
-		if (!toolPath) {
-			// 4.1. Downloading SDK
-			await downloadAndCacheSdk(versionSpec, channel, arch);
+	if (!toolPath) {
+		// 4.1. Downloading SDK
+		await downloadAndCacheSdk(versionSpec, channel, arch);
 
-			// 4.2. Verifying that tool is now available
-			task.debug(`Trying again to get (${FLUTTER_TOOL_NAME},${versionSpec}, ${arch}) tool from local cache`);
-			toolPath = tool.findLocalTool(FLUTTER_TOOL_NAME, versionSpec, arch);
-		}
-
-		// 5. Creating the environment variable
-		let fullFlutterPath: string = path.join(toolPath, FLUTTER_EXE_RELATIVEPATH);
-		task.debug(`Set ${FLUTTER_TOOL_PATH_ENV_VAR} with '${fullFlutterPath}'`);
-		task.setVariable(FLUTTER_TOOL_PATH_ENV_VAR, fullFlutterPath);
+		// 4.2. Verifying that tool is now available
+		task.debug(`Trying again to get (${FLUTTER_TOOL_NAME},${versionSpec}, ${arch}) tool from local cache`);
+		toolPath = tool.findLocalTool(FLUTTER_TOOL_NAME, versionSpec, arch);
 	}
-	catch (err) {
-		task.setResult(task.TaskResult.Failed, err);
-	}
+
+	// 5. Creating the environment variable
+	let fullFlutterPath: string = path.join(toolPath, FLUTTER_EXE_RELATIVEPATH);
+	task.debug(`Set ${FLUTTER_TOOL_PATH_ENV_VAR} with '${fullFlutterPath}'`);
+	task.setVariable(FLUTTER_TOOL_PATH_ENV_VAR, fullFlutterPath);
+	task.setResult(task.TaskResult.Succeeded, "Installed");
 }
 
 function findArchitecture() {
@@ -54,7 +50,7 @@ function findArchitecture() {
 
 async function downloadAndCacheSdk(versionSpec: string, channel: string, arch: string): Promise<void> {
 	// 1. Download SDK archive
-	let downloadUrl = `https://storage.googleapis.com/flutter_infra/releases/${channel}/macos/flutter_${arch}_v${versionSpec}.zip`;
+	let downloadUrl = `https://storage.googleapis.com/flutter_infra/releases/${channel}/${arch}/flutter_${arch}_v${versionSpec}.zip`;
 	task.debug(`Starting download archive from '${downloadUrl}'`);
 	var bundleZip = await tool.downloadTool(downloadUrl);
 	task.debug(`Succeeded to download '${bundleZip}' archive from '${downloadUrl}'`);

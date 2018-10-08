@@ -29,7 +29,7 @@
             "name": "version",
             "type": "pickList",
             "label": "Version",
-            "defaultValue": true,
+            "defaultValue": "latest",
             "required": true,
             "helpMarkDown": "Use the latest version of the Flutter SDK or a custom one.",
             "options": {

@@ -26,4 +26,10 @@ void main() {
     expect(find.text('0'), findsNothing);
     expect(find.text('1'), findsOneWidget);
   });
+  testWidgets('Other test', (WidgetTester tester) async {
+
+  });
+  testWidgets('And another test', (WidgetTester tester) async {
+    throw Error();
+  });
 }

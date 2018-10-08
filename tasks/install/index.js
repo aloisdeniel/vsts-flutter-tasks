@@ -41,6 +41,7 @@ function main() {
         let fullFlutterPath = path.join(toolPath, FLUTTER_EXE_RELATIVEPATH);
         task.debug(`Set ${FLUTTER_TOOL_PATH_ENV_VAR} with '${fullFlutterPath}'`);
         task.setVariable(FLUTTER_TOOL_PATH_ENV_VAR, fullFlutterPath);
+        task.setResult(task.TaskResult.Succeeded, "Installed");
     });
 }
 function findArchitecture() {
@@ -53,7 +54,7 @@ function findArchitecture() {
 function downloadAndCacheSdk(versionSpec, channel, arch) {
     return __awaiter(this, void 0, void 0, function* () {
         // 1. Download SDK archive
-        let downloadUrl = `https://storage.googleapis.com/flutter_infra/releases/${channel}/macos/flutter_${arch}_v${versionSpec}.zip`;
+        let downloadUrl = `https://storage.googleapis.com/flutter_infra/releases/${channel}/${arch}/flutter_${arch}_v${versionSpec}.zip`;
         task.debug(`Starting download archive from '${downloadUrl}'`);
         var bundleZip = yield tool.downloadTool(downloadUrl);
         task.debug(`Succeeded to download '${bundleZip}' archive from '${downloadUrl}'`);

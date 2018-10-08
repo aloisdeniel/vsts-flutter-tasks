@@ -1,0 +1,62 @@
+{
+    "id": "6bee7ef4-7576-42da-b464-c654d0ef0cb9",
+    "name": "FlutterTest",
+    "friendlyName": "Flutter Test",
+    "description": "Executes all tests for a Flutter project.",
+    "helpMarkdown": "For more information, take a look at the Flutter [documentation](https://flutter.io)",
+    "category": "Test",
+    "author": "Aloïs Deniel",
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 0
+    },
+    "instanceNameFormat": "Flutter Test",
+    "inputs": [
+        {
+            "name": "projectDirectory",
+            "type": "filePath",
+            "label": "Path to the project folder",
+            "defaultValue": "",
+            "helpMarkDown": "The path to the project folder (which contains the `pubspec.yaml`)",
+            "required": true
+        },
+        {
+            "name": "testName",
+            "type": "string",
+            "label": "Test name",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "A regular expression matching substrings of the names of tests to run."
+        },
+        {
+            "name": "testPlainName",
+            "type": "string",
+            "label": "Test plain name",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "A plain-text substring of the names of tests to run."
+        },
+        {
+            "name": "updateGoldens",
+            "type": "bool",
+            "label": "Update goldens",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Whether matchesGoldenFile() calls within your test methods should update the golden files rather than test for an existing match."
+        },
+        {
+            "name": "concurrency",
+            "type": "string",
+            "label": "Concurrency",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The number of concurrent test processes to run. (defaults to '6')"
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}

@@ -1,7 +1,7 @@
 {
     "manifestVersion": 1,
     "id": "flutter",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "name": "Flutter",
     "description": "Flutter extension for Azure DevOps",
     "publisher": "aloisdeniel",
@@ -49,6 +49,9 @@
             "path": "tasks/build"
         },
         {
+            "path": "tasks/test"
+        },
+        {
             "path": "images",
             "addressable": true
         }
@@ -72,6 +75,16 @@
             ],
             "properties": {
                 "name": "tasks/build"
+            }
+        },
+        {
+            "id": "flutter-test",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/test"
             }
         }
     ]
