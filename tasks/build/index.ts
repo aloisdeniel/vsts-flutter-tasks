@@ -13,7 +13,7 @@ async function main(): Promise<void> {
 
     // 2. Clean if requested
     task.debug(`Cleaning`);
-    clean(flutterPath);
+    await clean(flutterPath);
 
     // 3. Get target
     let target = task.getInput('target', true);
@@ -33,22 +33,25 @@ async function main(): Promise<void> {
     if (target === "all" || target === "ios") {
         let targetPlatform = task.getInput('iosTargetPlatform', false);
         let codesign = task.getBoolInput('iosCodesign', false);
-        buildIpa(flutterPath, targetPlatform == "simulator", codesign, buildName, buildNumber);
+        await buildIpa(flutterPath, targetPlatform == "simulator", codesign, buildName, buildNumber);
     }
 
     if (target === "all" || target === "apk") {
         let targetPlatform = task.getInput('apkTargetPlatform', false);
-        buildApk(flutterPath, targetPlatform, buildName, buildNumber);
+        await buildApk(flutterPath, targetPlatform, buildName, buildNumber);
     }
 
     task.setResult(task.TaskResult.Succeeded, "Application built");
 }
 
-function clean(flutter: string) {
-    return task.exec(flutter, ["clean"]);
+async function clean(flutter: string) {
+    var result = await task.exec(flutter, ["clean"]);
+    if (result !== 0) {
+        throw new Error("clean failed");
+    }
 }
 
-function buildApk(flutter: string, targetPlatform?: string, buildName?: string, buildNumber?: string) {
+async function buildApk(flutter: string, targetPlatform?: string, buildName?: string, buildNumber?: string) {
 
     var args = [
         "build",
@@ -69,12 +72,14 @@ function buildApk(flutter: string, targetPlatform?: string, buildName?: string, 
         args.push("--build-number=" + buildNumber);
     }
 
-    if (task.exec(flutter, args) !== 0) {
+    var result = await task.exec(flutter, args);
+
+    if (result !== 0) {
         throw new Error("apk build failed");
     }
 }
 
-function buildIpa(flutter: string, simulator?: boolean, codesign?: boolean, buildName?: string, buildNumber?: string) {
+async function buildIpa(flutter: string, simulator?: boolean, codesign?: boolean, buildName?: string, buildNumber?: string) {
 
     var args = [
         "build",
@@ -98,7 +103,8 @@ function buildIpa(flutter: string, simulator?: boolean, codesign?: boolean, buil
         args.push("--build-number=" + buildNumber);
     }
 
-    if (task.exec(flutter, args) !== 0) {
+    var result = await task.exec(flutter, args);
+    if (result !== 0) {
         throw new Error("ios build failed");
     }
 }
