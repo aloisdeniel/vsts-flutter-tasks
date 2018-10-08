@@ -4,7 +4,7 @@
 
 ## Installation
 
-Installation can be done using [Visual Studio MarketPlace](https://marketplace.visualstudio.com/items?itemName=aloisdeniel.vsts-flutter).
+Installation can be done using [Visual Studio MarketPlace](https://marketplace.visualstudio.com/items?itemName=aloisdeniel.flutter).
 
 ## Source Code
 
