@@ -36,7 +36,7 @@ Build the given mobile application project. You must call the `Flutter Install` 
 * _(Optional)_. Set `package number` (like `12`) that will override the manifest's one.
 * __(Android)__._(Optional)_. Set `platform` for the Android target : `android-arm (default)`, `android-arm64`.
 * __(iOS)__._(Optional)_. Set `platform` for the iOS target : `device (default)`, `simulator`.
-* __(iOS)__._(Optional)_. Codesign the application bundle (only available on device builds, and activated by default).
+* __(iOS)__._(Optional)_. Codesign the application bundle (only available on device builds, and activated by default). **Warning: you must install a valid certificate before build with the `Install an Apple Certificate`task**
 
 ### Test
 

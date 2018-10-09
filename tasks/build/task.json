@@ -85,7 +85,7 @@
             "label": "Codesign application bundle",
             "defaultValue": "true",
             "required": false,
-            "helpMarkDown": "Indicates whether the application bundle should be codesigned.",
+            "helpMarkDown": "Indicates whether the application bundle should be codesigned. **Warning: you must install a valid certificate before build with the `Install an Apple Certificate`task**",
             "visibleRule": "target = ios"
         }
     ],
