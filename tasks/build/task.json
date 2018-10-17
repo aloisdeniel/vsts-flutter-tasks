@@ -26,7 +26,8 @@
             "required": true,
             "options": {
                 "ios": "iOS",
-                "apk": "Android"
+                "apk": "Android",
+                "all": "All",
             }
         },
         {
@@ -36,6 +37,14 @@
             "defaultValue": "",
             "helpMarkDown": "The path to the project folder (which contains the `pubspec.yaml`)",
             "required": true
+        },
+        {
+            "name": "buildFlavour",
+            "type": "string",
+            "label": "Build flavour",
+            "defaultValue": "",
+            "helpMarkDown": "The flavour of the build, debug or release",
+            "required": false
         },
         {
             "name": "buildNumber",

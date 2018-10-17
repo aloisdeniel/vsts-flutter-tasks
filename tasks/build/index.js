@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const path = require("path");
-const task = require("vsts-task-lib/task");
+const task = require("azure-pipelines-task-lib/task");
 const FLUTTER_TOOL_PATH_ENV_VAR = 'FlutterToolPath';
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -30,15 +30,16 @@ function main() {
         // 4. Get common input
         let buildName = task.getInput('buildName', false);
         let buildNumber = task.getInput('buildNumber', false);
+        let buildFlavour = task.getInput('buildFlavour', false);
         // 5. Builds
         if (target === "all" || target === "ios") {
             let targetPlatform = task.getInput('iosTargetPlatform', false);
             let codesign = task.getBoolInput('iosCodesign', false);
-            yield buildIpa(flutterPath, targetPlatform == "simulator", codesign, buildName, buildNumber);
+            yield buildIpa(flutterPath, targetPlatform == "simulator", codesign, buildName, buildNumber, buildFlavour);
         }
         if (target === "all" || target === "apk") {
             let targetPlatform = task.getInput('apkTargetPlatform', false);
-            yield buildApk(flutterPath, targetPlatform, buildName, buildNumber);
+            yield buildApk(flutterPath, targetPlatform, buildName, buildNumber, buildFlavour);
         }
         task.setResult(task.TaskResult.Succeeded, "Application built");
     });
@@ -51,13 +52,12 @@ function clean(flutter) {
         }
     });
 }
-function buildApk(flutter, targetPlatform, buildName, buildNumber) {
+function buildApk(flutter, targetPlatform, buildName, buildNumber, buildFlavour) {
     return __awaiter(this, void 0, void 0, function* () {
         var args = [
             "build",
             "apk",
-            "--pub",
-            "--release"
+            "--pub"
         ];
         if (targetPlatform) {
             args.push("--target-platform=" + targetPlatform);
@@ -68,19 +68,24 @@ function buildApk(flutter, targetPlatform, buildName, buildNumber) {
         if (buildNumber) {
             args.push("--build-number=" + buildNumber);
         }
+        if (buildFlavour) {
+            args.push("--" + buildFlavour);
+        }
+        else {
+            args.push("--release");
+        }
         var result = yield task.exec(flutter, args);
         if (result !== 0) {
             throw new Error("apk build failed");
         }
     });
 }
-function buildIpa(flutter, simulator, codesign, buildName, buildNumber) {
+function buildIpa(flutter, simulator, codesign, buildName, buildNumber, buildFlavour) {
     return __awaiter(this, void 0, void 0, function* () {
         var args = [
             "build",
             "ios",
-            "--pub",
-            "--release"
+            "--pub"
         ];
         if (simulator) {
             args.push("--simulator");
@@ -93,6 +98,12 @@ function buildIpa(flutter, simulator, codesign, buildName, buildNumber) {
         }
         if (buildNumber) {
             args.push("--build-number=" + buildNumber);
+        }
+        if (buildFlavour) {
+            args.push("--" + buildFlavour);
+        }
+        else {
+            args.push("--release");
         }
         var result = yield task.exec(flutter, args);
         if (result !== 0) {
