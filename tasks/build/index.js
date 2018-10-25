@@ -89,6 +89,7 @@ function buildIpa(flutter, simulator, codesign, buildName, buildNumber, buildFla
         ];
         if (simulator) {
             args.push("--simulator");
+            args.push("--debug"); //simulator can only be build in debug
         }
         else if (codesign) {
             args.push("--codesign");
@@ -99,11 +100,13 @@ function buildIpa(flutter, simulator, codesign, buildName, buildNumber, buildFla
         if (buildNumber) {
             args.push("--build-number=" + buildNumber);
         }
-        if (buildFlavour) {
-            args.push("--" + buildFlavour);
-        }
-        else {
-            args.push("--release");
+        if (!simulator) {
+            if (buildFlavour) {
+                args.push("--" + buildFlavour);
+            }
+            else {
+                args.push("--release");
+            }
         }
         var result = yield task.exec(flutter, args);
         if (result !== 0) {

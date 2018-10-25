@@ -31,7 +31,7 @@ async function main(): Promise<void> {
     if (target === "all" || target === "ios") {
         let targetPlatform = task.getInput('iosTargetPlatform', false);
         let codesign = task.getBoolInput('iosCodesign', false);
-        await buildIpa(flutterPath, targetPlatform == "simulator", codesign, buildName, buildNumber, buildFlavour) ;
+        await buildIpa(flutterPath, targetPlatform == "simulator", codesign, buildName, buildNumber, buildFlavour);
     }
 
     if (target === "all" || target === "apk") {
@@ -92,6 +92,7 @@ async function buildIpa(flutter: string, simulator?: boolean, codesign?: boolean
 
     if (simulator) {
         args.push("--simulator");
+        args.push("--debug");//simulator can only be build in debug
     }
     else if (codesign) {
         args.push("--codesign");
@@ -105,10 +106,12 @@ async function buildIpa(flutter: string, simulator?: boolean, codesign?: boolean
         args.push("--build-number=" + buildNumber);
     }
 
-    if (buildFlavour) {
-        args.push("--" + buildFlavour);
-    } else {
-        args.push("--release");
+    if (!simulator) {
+        if (buildFlavour) {
+            args.push("--" + buildFlavour);
+        } else {
+            args.push("--release");
+        }
     }
 
     var result = await task.exec(flutter, args);
