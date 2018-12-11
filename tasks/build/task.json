@@ -11,8 +11,8 @@
     "author": "Aloïs Deniel",
     "version": {
         "Major": 0,
-        "Minor": 0,
-        "Patch": 1
+        "Minor": 2,
+        "Patch": 13
     },
     "groups": [],
     "instanceNameFormat": "Flutter Build $(target)",
@@ -27,7 +27,7 @@
             "options": {
                 "ios": "iOS",
                 "apk": "Android",
-                "all": "All",
+                "all": "All"
             }
         },
         {

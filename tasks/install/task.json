@@ -8,8 +8,8 @@
     "author": "Aloïs Deniel",
     "version": {
         "Major": 0,
-        "Minor": 1,
-        "Patch": 0
+        "Minor": 2,
+        "Patch": 13
     },
     "instanceNameFormat": "Flutter Install",
     "inputs": [
@@ -23,7 +23,7 @@
             "options": {
                 "stable": "Stable",
                 "beta": "Beta",
-                "dev": "Dev",
+                "dev": "Dev"
             }
         },
         {
