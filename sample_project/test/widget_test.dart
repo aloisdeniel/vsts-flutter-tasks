@@ -30,6 +30,6 @@ void main() {
 
   });
   testWidgets('And another test', (WidgetTester tester) async {
-    throw Error();
+    //throw Error();
   });
 }
