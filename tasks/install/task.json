@@ -21,8 +21,9 @@
             "required": true,
             "helpMarkDown": "The build release channels (https://github.com/flutter/flutter/wiki/Flutter-build-release-channels).",
             "options": {
+                "stable": "Stable",
                 "beta": "Beta",
-                "dev": "Dev"
+                "dev": "Dev",
             }
         },
         {
