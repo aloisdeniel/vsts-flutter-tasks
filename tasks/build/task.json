@@ -57,7 +57,7 @@
         {
             "name": "buildFlavour",
             "type": "string",
-            "label": "Build flavour",
+            "label": "Build Flavour",
             "defaultValue": "",
             "helpMarkDown": "The flavour of the build, (e.g. production, development). Must match either an Android Gradle flavour or Xcode scheme.",
             "required": false
