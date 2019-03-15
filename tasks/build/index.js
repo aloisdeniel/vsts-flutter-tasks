@@ -28,6 +28,7 @@ function main() {
             task.cd(projectDirectory);
         }
         // 4. Get common input
+        let debugMode = task.getInput('debugMode', false);
         let buildName = task.getInput('buildName', false);
         let buildNumber = task.getInput('buildNumber', false);
         let buildFlavour = task.getInput('buildFlavour', false);
@@ -35,11 +36,11 @@ function main() {
         if (target === "all" || target === "ios") {
             let targetPlatform = task.getInput('iosTargetPlatform', false);
             let codesign = task.getBoolInput('iosCodesign', false);
-            yield buildIpa(flutterPath, targetPlatform == "simulator", codesign, buildName, buildNumber, buildFlavour);
+            yield buildIpa(flutterPath, targetPlatform == "simulator", codesign, buildName, buildNumber, debugMode, buildFlavour);
         }
         if (target === "all" || target === "apk") {
             let targetPlatform = task.getInput('apkTargetPlatform', false);
-            yield buildApk(flutterPath, targetPlatform, buildName, buildNumber, buildFlavour);
+            yield buildApk(flutterPath, targetPlatform, buildName, buildNumber, debugMode, buildFlavour);
         }
         task.setResult(task.TaskResult.Succeeded, "Application built");
     });
@@ -52,13 +53,15 @@ function clean(flutter) {
         }
     });
 }
-function buildApk(flutter, targetPlatform, buildName, buildNumber, buildFlavour) {
+function buildApk(flutter, targetPlatform, buildName, buildNumber, debugMode, buildFlavour) {
     return __awaiter(this, void 0, void 0, function* () {
         var args = [
             "build",
-            "apk",
-            "--pub"
+            "apk"
         ];
+        if (debugMode) {
+            args.push("--debug");
+        }
         if (targetPlatform) {
             args.push("--target-platform=" + targetPlatform);
         }
@@ -69,10 +72,7 @@ function buildApk(flutter, targetPlatform, buildName, buildNumber, buildFlavour)
             args.push("--build-number=" + buildNumber);
         }
         if (buildFlavour) {
-            args.push("--" + buildFlavour);
-        }
-        else {
-            args.push("--release");
+            args.push("--flavor=" + buildFlavour);
         }
         var result = yield task.exec(flutter, args);
         if (result !== 0) {
@@ -80,16 +80,20 @@ function buildApk(flutter, targetPlatform, buildName, buildNumber, buildFlavour)
         }
     });
 }
-function buildIpa(flutter, simulator, codesign, buildName, buildNumber, buildFlavour) {
+function buildIpa(flutter, simulator, codesign, buildName, buildNumber, debugMode, buildFlavour) {
     return __awaiter(this, void 0, void 0, function* () {
         var args = [
             "build",
-            "ios",
-            "--pub"
+            "ios"
         ];
+        if (debugMode) {
+            args.push("--debug");
+        }
         if (simulator) {
             args.push("--simulator");
-            args.push("--debug"); //simulator can only be build in debug
+            if (!debugMode) {
+                args.push("--debug"); // simulator can only be built in debug
+            }
         }
         else if (codesign) {
             args.push("--codesign");
@@ -100,13 +104,8 @@ function buildIpa(flutter, simulator, codesign, buildName, buildNumber, buildFla
         if (buildNumber) {
             args.push("--build-number=" + buildNumber);
         }
-        if (!simulator) {
-            if (buildFlavour) {
-                args.push("--" + buildFlavour);
-            }
-            else {
-                args.push("--release");
-            }
+        if (!simulator && buildFlavour) {
+            args.push("--flavor=" + buildFlavour);
         }
         var result = yield task.exec(flutter, args);
         if (result !== 0) {

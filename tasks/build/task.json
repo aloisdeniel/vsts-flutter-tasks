@@ -12,7 +12,7 @@
     "version": {
         "Major": 0,
         "Minor": 2,
-        "Patch": 13
+        "Patch": 14
     },
     "groups": [],
     "instanceNameFormat": "Flutter Build $(target)",
@@ -25,42 +25,58 @@
             "helpMarkDown": "The target platform of your application.",
             "required": true,
             "options": {
+                "all": "All",
                 "ios": "iOS",
-                "apk": "Android",
-                "all": "All"
+                "apk": "Android"
             }
         },
         {
             "name": "projectDirectory",
             "type": "filePath",
             "label": "Path to the project folder",
-            "defaultValue": "",
+            "defaultValue": ".",
             "helpMarkDown": "The path to the project folder (which contains the `pubspec.yaml`)",
             "required": true
+        },
+        {
+            "name": "flutterDirectory",
+            "type": "filePath",
+            "label": "Path to the Flutter SDK",
+            "defaultValue": "",
+            "helpMarkDown": "Path to the Flutter SDK if not using Flutter Install task before this one.",
+            "required": false
+        },
+        {
+            "name": "debugMode",
+            "type": "boolean",
+            "label": "Debug",
+            "defaultValue": false,
+            "helpMarkDown": "Force build type to be Debug instead of Release.",
+            "required": false
         },
         {
             "name": "buildFlavour",
             "type": "string",
             "label": "Build flavour",
             "defaultValue": "",
-            "helpMarkDown": "The flavour of the build, debug or release",
+            "helpMarkDown": "The flavour of the build, (e.g. production, development). Must match either an Android Gradle flavour or Xcode scheme.",
             "required": false
         },
         {
             "name": "buildNumber",
             "type": "string",
             "label": "Package build number",
-            "defaultValue": "",
+            "defaultValue": "$(Build.BuildNumber)",
             "required": false,
-            "helpMarkDown": "Overrides the build number into the application manifest."
+            "helpMarkDown": "An identifier used as an internal version number. Each build must have a unique identifier to differentiate it from previous builds."
         },
         {
             "name": "buildName",
             "type": "string",
-            "label": "Package build name",
+            "label": "Version number",
             "defaultValue": "",
             "required": false,
-            "helpMarkDown": "Overrides the package name (i.e. `com.fabrikam.stocks`) into the application manifest."
+            "helpMarkDown": "An `x.y.z` string used as the version number shown to users. For each new version of your app, you should provide a version number to differentiate it from previous versions."
         },
         {
             "name": "apkTargetPlatform",
@@ -81,7 +97,7 @@
             "label": "Target platform architecture",
             "defaultValue": "device",
             "required": false,
-            "helpMarkDown": "Sets the target iOS platform architecture",
+            "helpMarkDown": "Sets the target iOS platform",
             "visibleRule": "target = ios",
             "options": {
                 "device": "Device",

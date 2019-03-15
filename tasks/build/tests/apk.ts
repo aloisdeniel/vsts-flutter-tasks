@@ -6,7 +6,7 @@ const taskPath = path.join(__dirname, "../index.js");
 var runner = new mr.TaskMockRunner(taskPath);
 
 function assertDirectory(path: string) {
-    if (!fs.existsSync(path)){
+    if (!fs.existsSync(path)) {
         fs.mkdirSync(path);
     }
 }
@@ -33,5 +33,7 @@ runner.setInput("buildName", "com.aloisdeniel.vsts");
 runner.setInput("buildNumber", "12");
 runner.setInput("projectDirectory", path.join(rootPath, "sample_project"));
 runner.setInput("outputDirectory", dropPath);
+runner.setInput("buildFlavour", "development");
+runner.setInput("debugMode", false);
 
 runner.run(true);
