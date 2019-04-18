@@ -14,7 +14,7 @@ const FLUTTER_TOOL_PATH_ENV_VAR = 'FlutterToolPath';
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
         // 1. Check flutter environment
-        var flutterPath = task.getVariable(FLUTTER_TOOL_PATH_ENV_VAR) || process.env[FLUTTER_TOOL_PATH_ENV_VAR];
+        var flutterPath = task.getVariable(FLUTTER_TOOL_PATH_ENV_VAR) || process.env[FLUTTER_TOOL_PATH_ENV_VAR] || task.getInput('flutterDirectory', false);
         flutterPath = path.join(flutterPath, "flutter");
         if (!flutterPath) {
             throw new Error(`The '${FLUTTER_TOOL_PATH_ENV_VAR}' environment variable must be set before using this task (you can use 'flutterinstall' task).`);
@@ -28,7 +28,7 @@ function main() {
             task.cd(projectDirectory);
         }
         // 4. Get common input
-        let debugMode = task.getInput('debugMode', false);
+        let debugMode = task.getBoolInput('debugMode', false);
         let buildName = task.getInput('buildName', false);
         let buildNumber = task.getInput('buildNumber', false);
         let buildFlavour = task.getInput('buildFlavour', false);
@@ -43,14 +43,6 @@ function main() {
             yield buildApk(flutterPath, targetPlatform, buildName, buildNumber, debugMode, buildFlavour);
         }
         task.setResult(task.TaskResult.Succeeded, "Application built");
-    });
-}
-function clean(flutter) {
-    return __awaiter(this, void 0, void 0, function* () {
-        var result = yield task.exec(flutter, ["clean"]);
-        if (result !== 0) {
-            throw new Error("clean failed");
-        }
     });
 }
 function buildApk(flutter, targetPlatform, buildName, buildNumber, debugMode, buildFlavour) {
@@ -104,8 +96,10 @@ function buildIpa(flutter, simulator, codesign, buildName, buildNumber, debugMod
         if (buildNumber) {
             args.push("--build-number=" + buildNumber);
         }
-        if (!simulator && buildFlavour) {
-            args.push("--flavor=" + buildFlavour);
+        if (!simulator) {
+            if (buildFlavour) {
+                args.push("--flavor=" + buildFlavour);
+            }
         }
         var result = yield task.exec(flutter, args);
         if (result !== 0) {

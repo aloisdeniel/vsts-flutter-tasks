@@ -22,7 +22,7 @@ async function main(): Promise<void> {
     }
 
     // 4. Get common input
-    let debugMode = task.getInput('debugMode', false);
+    let debugMode = task.getBoolInput('debugMode', false);
     let buildName = task.getInput('buildName', false);
     let buildNumber = task.getInput('buildNumber', false);
     let buildFlavour = task.getInput('buildFlavour', false);
