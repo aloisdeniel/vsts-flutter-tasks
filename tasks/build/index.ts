@@ -20,6 +20,7 @@ async function main(): Promise<void> {
         task.debug(`Moving to ${projectDirectory}`);
         task.cd(projectDirectory);
     }
+    task.debug(`Project's directory : ${task.cwd()}`);
 
     // 4. Get common input
     let debugMode = task.getBoolInput('debugMode', false);
