@@ -5,7 +5,7 @@ const FLUTTER_TOOL_PATH_ENV_VAR: string = 'FlutterToolPath';
 
 async function main(): Promise<void> {
     // 1. Check flutter environment
-    var flutterPath = task.getVariable(FLUTTER_TOOL_PATH_ENV_VAR) || process.env[FLUTTER_TOOL_PATH_ENV_VAR];
+    var flutterPath = task.getVariable(FLUTTER_TOOL_PATH_ENV_VAR) || process.env[FLUTTER_TOOL_PATH_ENV_VAR] || task.getInput('flutterDirectory', false);
     flutterPath = path.join(flutterPath, "flutter")
     if (!flutterPath) {
         throw new Error(`The '${FLUTTER_TOOL_PATH_ENV_VAR}' environment variable must be set before using this task (you can use 'flutterinstall' task).`);
@@ -22,40 +22,36 @@ async function main(): Promise<void> {
     }
 
     // 4. Get common input
+    let debugMode = task.getInput('debugMode', false);
     let buildName = task.getInput('buildName', false);
     let buildNumber = task.getInput('buildNumber', false);
     let buildFlavour = task.getInput('buildFlavour', false);
-
 
     // 5. Builds
     if (target === "all" || target === "ios") {
         let targetPlatform = task.getInput('iosTargetPlatform', false);
         let codesign = task.getBoolInput('iosCodesign', false);
-        await buildIpa(flutterPath, targetPlatform == "simulator", codesign, buildName, buildNumber, buildFlavour);
+        await buildIpa(flutterPath, targetPlatform == "simulator", codesign, buildName, buildNumber, debugMode, buildFlavour);
     }
 
     if (target === "all" || target === "apk") {
         let targetPlatform = task.getInput('apkTargetPlatform', false);
-        await buildApk(flutterPath, targetPlatform, buildName, buildNumber, buildFlavour);
+        await buildApk(flutterPath, targetPlatform, buildName, buildNumber, debugMode, buildFlavour);
     }
 
     task.setResult(task.TaskResult.Succeeded, "Application built");
 }
 
-async function clean(flutter: string) {
-    var result = await task.exec(flutter, ["clean"]);
-    if (result !== 0) {
-        throw new Error("clean failed");
-    }
-}
-
-async function buildApk(flutter: string, targetPlatform?: string, buildName?: string, buildNumber?: string, buildFlavour?: string) {
+async function buildApk(flutter: string, targetPlatform?: string, buildName?: string, buildNumber?: string, debugMode?: boolean, buildFlavour?: string) {
 
     var args = [
         "build",
-        "apk",
-        "--pub"
+        "apk"
     ];
+
+    if (debugMode) {
+        args.push("--debug");
+    }
 
     if (targetPlatform) {
         args.push("--target-platform=" + targetPlatform);
@@ -70,9 +66,7 @@ async function buildApk(flutter: string, targetPlatform?: string, buildName?: st
     }
 
     if (buildFlavour) {
-        args.push("--" + buildFlavour);
-    } else {
-        args.push("--release");
+        args.push("--flavor=" + buildFlavour);
     }
 
     var result = await task.exec(flutter, args);
@@ -82,17 +76,23 @@ async function buildApk(flutter: string, targetPlatform?: string, buildName?: st
     }
 }
 
-async function buildIpa(flutter: string, simulator?: boolean, codesign?: boolean, buildName?: string, buildNumber?: string, buildFlavour?: string) {
+async function buildIpa(flutter: string, simulator?: boolean, codesign?: boolean, buildName?: string, buildNumber?: string, debugMode?: boolean, buildFlavour?: string) {
 
     var args = [
         "build",
-        "ios",
-        "--pub"
+        "ios"
     ];
+
+    if (debugMode) {
+        args.push("--debug");
+    }
 
     if (simulator) {
         args.push("--simulator");
-        args.push("--debug");//simulator can only be build in debug
+
+        if (!debugMode) {
+            args.push("--debug"); // simulator can only be built in debug
+        }
     }
     else if (codesign) {
         args.push("--codesign");
@@ -108,9 +108,7 @@ async function buildIpa(flutter: string, simulator?: boolean, codesign?: boolean
 
     if (!simulator) {
         if (buildFlavour) {
-            args.push("--" + buildFlavour);
-        } else {
-            args.push("--release");
+            args.push("--flavor=" + buildFlavour);
         }
     }
 

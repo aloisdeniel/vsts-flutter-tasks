@@ -30,4 +30,6 @@ runner.setInput("buildName", "com.aloisdeniel.vsts");
 runner.setInput("buildNumber", "12");
 runner.setInput("projectDirectory", path.join(rootPath, "sample_project"));
 runner.setInput("outputDirectory", dropPath);
+runner.setInput("buildFlavour", "development");
+runner.setInput("debugMode", false);
 runner.run(true);
