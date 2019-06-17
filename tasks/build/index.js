@@ -91,6 +91,9 @@ function buildIpa(flutter, simulator, codesign, buildName, buildNumber, debugMod
         else if (codesign) {
             args.push("--codesign");
         }
+        else {
+            args.push("--no-codesign");
+        }
         if (buildName) {
             args.push("--build-name=" + buildName);
         }
