@@ -1,17 +1,17 @@
 {
-    "id": "fca8d27d-85f4-4d5d-a519-8d7a7edf15d7",
+    "id": "f4da852b-6e12-4087-baf2-2bc1ce9b5637",
     "name": "FlutterInstall",
-    "friendlyName": "Flutter Install",
+    "friendlyName": "Flutter Install (Extended)",
     "description": "Install the Flutter environment.",
     "helpMarkdown": "For more information, take a look at the Flutter [documentation](https://flutter.io)",
     "category": "Tool",
-    "author": "Aloïs Deniel",
+    "author": "Aloïs Deniel, extended by Bas Rops",
     "version": {
         "Major": 0,
         "Minor": 2,
-        "Patch": 15
+        "Patch": 18
     },
-    "instanceNameFormat": "Flutter Install",
+    "instanceNameFormat": "Flutter Install (Extended)",
     "inputs": [
         {
             "name": "channel",

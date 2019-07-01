@@ -1,18 +1,18 @@
 {
     "manifestVersion": 1,
-    "id": "flutter",
-    "version": "0.2.15",
-    "name": "Flutter",
+    "id": "flutter-extended",
+    "version": "0.2.17",
+    "name": "Flutter Extended",
     "description": "Flutter extension for Azure DevOps",
-    "publisher": "aloisdeniel",
-    "public": true,
+    "publisher": "ic3dbasrops",
+    "public": false,
     "targets": [
         {
             "id": "Microsoft.VisualStudio.Services"
         }
     ],
     "categories": [
-        "Pipelines"
+        "Azure Pipelines"
     ],
     "icons": {
         "default": "icon.png"
@@ -28,12 +28,12 @@
     },
     "links": {
         "support": {
-            "uri": "https://github.com/aloisdeniel/vsts-flutter-tasks/issues"
+            "uri": "https://github.com/Tregan/vsts-flutter-tasks/issues"
         }
     },
     "repository": {
         "type": "git",
-        "uri": "https://github.com/aloisdeniel/vsts-flutter-tasks"
+        "uri": "https://github.com/Tregan/vsts-flutter-tasks"
     },
     "tags": [
         "flutter",
@@ -58,7 +58,7 @@
     ],
     "contributions": [
         {
-            "id": "flutter-install",
+            "id": "flutter-extended-install",
             "type": "ms.vss-distributed-task.task",
             "targets": [
                 "ms.vss-distributed-task.tasks"
@@ -68,7 +68,7 @@
             }
         },
         {
-            "id": "flutter-build",
+            "id": "flutter-extended-build",
             "type": "ms.vss-distributed-task.task",
             "targets": [
                 "ms.vss-distributed-task.tasks"
@@ -78,7 +78,7 @@
             }
         },
         {
-            "id": "flutter-test",
+            "id": "flutter-extended-test",
             "type": "ms.vss-distributed-task.task",
             "targets": [
                 "ms.vss-distributed-task.tasks"

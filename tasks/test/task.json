@@ -1,17 +1,17 @@
 {
-    "id": "6bee7ef4-7576-42da-b464-c654d0ef0cb9",
+    "id": "70d84ddb-3d01-4643-83b0-534e63c85a30",
     "name": "FlutterTest",
-    "friendlyName": "Flutter Test",
+    "friendlyName": "Flutter Test (Extended)",
     "description": "Executes all tests for a Flutter project.",
     "helpMarkdown": "For more information, take a look at the Flutter [documentation](https://flutter.io)",
     "category": "Test",
-    "author": "Aloïs Deniel",
+    "author": "Aloïs Deniel, extended by Bas Rops",
     "version": {
         "Major": 0,
         "Minor": 2,
-        "Patch": 15
+        "Patch": 18
     },
-    "instanceNameFormat": "Flutter Test",
+    "instanceNameFormat": "Flutter Test (Extended)",
     "inputs": [
         {
             "name": "projectDirectory",
@@ -39,9 +39,9 @@
         },
         {
             "name": "updateGoldens",
-            "type": "bool",
+            "type": "boolean",
             "label": "Update goldens",
-            "defaultValue": "",
+            "defaultValue": false,
             "required": false,
             "helpMarkDown": "Whether matchesGoldenFile() calls within your test methods should update the golden files rather than test for an existing match."
         },
@@ -51,7 +51,15 @@
             "label": "Concurrency",
             "defaultValue": "",
             "required": false,
-            "helpMarkDown": "The number of concurrent test processes to run. (defaults to '6')"
+            "helpMarkDown": "The number of concurrent test processes to run. (defaults to '10')"
+        },
+		{
+            "name": "coverage",
+            "type": "boolean",
+            "label": "Coverage",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Whether to collect code coverage information."
         }
     ],
     "execution": {

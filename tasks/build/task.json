@@ -1,21 +1,21 @@
 {
-    "id": "10a2efb1-b922-4849-81de-bccd2537ccc1",
+    "id": "a0631b93-6bf6-4b36-be06-a973592261c8",
     "name": "FlutterBuild",
-    "friendlyName": "Flutter Build",
+    "friendlyName": "Flutter Build (Extended)",
     "description": "Build a Flutter application project.",
     "helpMarkDown": "[More Information](https://go.microsoft.com/fwlink/?LinkID=613747)",
     "category": "Build",
     "visibility": [
         "Build"
     ],
-    "author": "Aloïs Deniel",
+    "author": "Aloïs Deniel, extended by Bas Rops",
     "version": {
         "Major": 0,
         "Minor": 2,
-        "Patch": 15
+        "Patch": 18
     },
     "groups": [],
-    "instanceNameFormat": "Flutter Build $(target)",
+    "instanceNameFormat": "Flutter Build (Extended) $(target)",
     "inputs": [
         {
             "name": "target",
@@ -77,6 +77,14 @@
             "defaultValue": "",
             "required": false,
             "helpMarkDown": "An `x.y.z` string used as the version number shown to users. For each new version of your app, you should provide a version number to differentiate it from previous versions."
+        },
+		{
+            "name": "entryPoint",
+            "type": "string",
+            "label": "Entry-point",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The main entry-point file of the application, as run on the device. (defaults to 'lib/main.dart')"
         },
         {
             "name": "apkTargetPlatform",

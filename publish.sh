@@ -15,4 +15,4 @@ cd ../../
 npm i -g tfx-cli
 tfx extension create --manifest-globs vss-extension.json
 
-# > Upload from https://marketplace.visualstudio.com/manage/publishers/aloisdeniel
+# > Upload from https://marketplace.visualstudio.com/manage/publishers/ic3dbasrops
