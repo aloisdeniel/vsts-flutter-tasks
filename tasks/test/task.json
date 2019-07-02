@@ -39,9 +39,9 @@
         },
         {
             "name": "updateGoldens",
-            "type": "bool",
+            "type": "boolean",
             "label": "Update goldens",
-            "defaultValue": "",
+            "defaultValue": false,
             "required": false,
             "helpMarkDown": "Whether matchesGoldenFile() calls within your test methods should update the golden files rather than test for an existing match."
         },
@@ -51,7 +51,15 @@
             "label": "Concurrency",
             "defaultValue": "",
             "required": false,
-            "helpMarkDown": "The number of concurrent test processes to run. (defaults to '6')"
+            "helpMarkDown": "The number of concurrent test processes to run. (defaults to '10')"
+        },
+		{
+            "name": "coverage",
+            "type": "boolean",
+            "label": "Coverage",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Whether to collect code coverage information."
         }
     ],
     "execution": {

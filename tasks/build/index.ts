@@ -27,23 +27,24 @@ async function main(): Promise<void> {
     let buildName = task.getInput('buildName', false);
     let buildNumber = task.getInput('buildNumber', false);
     let buildFlavour = task.getInput('buildFlavour', false);
+	let entryPoint = task.getInput('entryPoint', false);
 
     // 5. Builds
     if (target === "all" || target === "ios") {
         let targetPlatform = task.getInput('iosTargetPlatform', false);
         let codesign = task.getBoolInput('iosCodesign', false);
-        await buildIpa(flutterPath, targetPlatform == "simulator", codesign, buildName, buildNumber, debugMode, buildFlavour);
+        await buildIpa(flutterPath, targetPlatform == "simulator", codesign, buildName, buildNumber, debugMode, buildFlavour, entryPoint);
     }
 
     if (target === "all" || target === "apk") {
         let targetPlatform = task.getInput('apkTargetPlatform', false);
-        await buildApk(flutterPath, targetPlatform, buildName, buildNumber, debugMode, buildFlavour);
+        await buildApk(flutterPath, targetPlatform, buildName, buildNumber, debugMode, buildFlavour, entryPoint);
     }
 
     task.setResult(task.TaskResult.Succeeded, "Application built");
 }
 
-async function buildApk(flutter: string, targetPlatform?: string, buildName?: string, buildNumber?: string, debugMode?: boolean, buildFlavour?: string) {
+async function buildApk(flutter: string, targetPlatform?: string, buildName?: string, buildNumber?: string, debugMode?: boolean, buildFlavour?: string, entryPoint?: string) {
 
     var args = [
         "build",
@@ -69,6 +70,10 @@ async function buildApk(flutter: string, targetPlatform?: string, buildName?: st
     if (buildFlavour) {
         args.push("--flavor=" + buildFlavour);
     }
+	
+	if (entryPoint) {
+        args.push("--target=" + entryPoint);
+    }
 
     var result = await task.exec(flutter, args);
 
@@ -77,7 +82,7 @@ async function buildApk(flutter: string, targetPlatform?: string, buildName?: st
     }
 }
 
-async function buildIpa(flutter: string, simulator?: boolean, codesign?: boolean, buildName?: string, buildNumber?: string, debugMode?: boolean, buildFlavour?: string) {
+async function buildIpa(flutter: string, simulator?: boolean, codesign?: boolean, buildName?: string, buildNumber?: string, debugMode?: boolean, buildFlavour?: string, entryPoint?: string) {
 
     var args = [
         "build",
@@ -105,6 +110,10 @@ async function buildIpa(flutter: string, simulator?: boolean, codesign?: boolean
 
     if (buildNumber) {
         args.push("--build-number=" + buildNumber);
+    }
+	
+	if (entryPoint) {
+        args.push("--target=" + entryPoint);
     }
 
     if (!simulator) {

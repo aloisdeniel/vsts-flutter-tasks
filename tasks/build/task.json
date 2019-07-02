@@ -78,6 +78,14 @@
             "required": false,
             "helpMarkDown": "An `x.y.z` string used as the version number shown to users. For each new version of your app, you should provide a version number to differentiate it from previous versions."
         },
+		{
+            "name": "entryPoint",
+            "type": "string",
+            "label": "Entry-point",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The main entry-point file of the application, as run on the device. (defaults to 'lib/main.dart')"
+        },
         {
             "name": "apkTargetPlatform",
             "type": "pickList",
