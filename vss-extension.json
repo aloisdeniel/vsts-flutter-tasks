@@ -1,7 +1,7 @@
 {
     "manifestVersion": 1,
     "id": "flutter-extended",
-    "version": "0.2.17",
+    "version": "0.2.36",
     "name": "Flutter Extended",
     "description": "Flutter extension for Azure DevOps",
     "publisher": "ic3dbasrops",
