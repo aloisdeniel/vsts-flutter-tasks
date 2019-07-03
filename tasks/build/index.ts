@@ -40,6 +40,10 @@ async function main(): Promise<void> {
         let targetPlatform = task.getInput('apkTargetPlatform', false);
         await buildApk(flutterPath, targetPlatform, buildName, buildNumber, debugMode, buildFlavour, entryPoint);
     }
+	
+	if (target === "all" || target === "aab") {
+        await buildAab(flutterPath, buildName, buildNumber, debugMode, buildFlavour, entryPoint);
+    }
 
     task.setResult(task.TaskResult.Succeeded, "Application built");
 }
@@ -57,6 +61,40 @@ async function buildApk(flutter: string, targetPlatform?: string, buildName?: st
 
     if (targetPlatform) {
         args.push("--target-platform=" + targetPlatform);
+    }
+
+    if (buildName) {
+        args.push("--build-name=" + buildName);
+    }
+
+    if (buildNumber) {
+        args.push("--build-number=" + buildNumber);
+    }
+
+    if (buildFlavour) {
+        args.push("--flavor=" + buildFlavour);
+    }
+	
+	if (entryPoint) {
+        args.push("--target=" + entryPoint);
+    }
+
+    var result = await task.exec(flutter, args);
+
+    if (result !== 0) {
+        throw new Error("apk build failed");
+    }
+}
+
+async function buildAab(flutter: string, buildName?: string, buildNumber?: string, debugMode?: boolean, buildFlavour?: string, entryPoint?: string) {
+
+    var args = [
+        "build",
+        "appbundle"
+    ];
+
+    if (debugMode) {
+        args.push("--debug");
     }
 
     if (buildName) {

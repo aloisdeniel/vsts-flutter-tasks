@@ -12,7 +12,7 @@
     "version": {
         "Major": 0,
         "Minor": 2,
-        "Patch": 36
+        "Patch": 37
     },
     "groups": [],
     "instanceNameFormat": "Flutter Build (Extended) $(target)",
@@ -21,13 +21,14 @@
             "name": "target",
             "type": "pickList",
             "label": "Target platform",
-            "defaultValue": "apk",
+            "defaultValue": "aab",
             "helpMarkDown": "The target platform of your application.",
             "required": true,
             "options": {
                 "all": "All",
                 "ios": "iOS",
-                "apk": "Android"
+                "apk": "Android (deprecated)",
+				"aab": "Android App Bundle"
             }
         },
         {
