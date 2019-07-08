@@ -9,7 +9,7 @@
     "version": {
         "Major": 0,
         "Minor": 2,
-        "Patch": 15
+        "Patch": 16
     },
     "instanceNameFormat": "Flutter Test",
     "inputs": [
@@ -39,9 +39,9 @@
         },
         {
             "name": "updateGoldens",
-            "type": "bool",
+            "type": "boolean",
             "label": "Update goldens",
-            "defaultValue": "",
+            "defaultValue": false,
             "required": false,
             "helpMarkDown": "Whether matchesGoldenFile() calls within your test methods should update the golden files rather than test for an existing match."
         },
