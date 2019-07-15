@@ -152,8 +152,8 @@ async function buildIpa(flutter: string, simulator?: boolean, codesign?: boolean
     if (buildNumber) {
         args.push("--build-number=" + buildNumber);
     }
-	
-	if (entryPoint) {
+
+    if (entryPoint) {
         args.push("--target=" + entryPoint);
     }
 
