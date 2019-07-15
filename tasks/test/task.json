@@ -52,14 +52,6 @@
             "defaultValue": "",
             "required": false,
             "helpMarkDown": "The number of concurrent test processes to run. (defaults to '10')"
-        },
-		{
-            "name": "coverage",
-            "type": "boolean",
-            "label": "Coverage",
-            "defaultValue": false,
-            "required": false,
-            "helpMarkDown": "Whether to collect code coverage information."
         }
     ],
     "execution": {
