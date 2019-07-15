@@ -44,6 +44,9 @@ function main() {
             let targetPlatform = task.getInput('apkTargetPlatform', false);
             yield buildApk(flutterPath, targetPlatform, buildName, buildNumber, debugMode, buildFlavour, entryPoint);
         }
+        if (target === "all" || target === "aab") {
+            yield buildAab(flutterPath, buildName, buildNumber, debugMode, buildFlavour, entryPoint);
+        }
         task.setResult(task.TaskResult.Succeeded, "Application built");
     });
 }
@@ -74,6 +77,33 @@ function buildApk(flutter, targetPlatform, buildName, buildNumber, debugMode, bu
         var result = yield task.exec(flutter, args);
         if (result !== 0) {
             throw new Error("apk build failed");
+        }
+    });
+}
+function buildAab(flutter, buildName, buildNumber, debugMode, buildFlavour, entryPoint) {
+    return __awaiter(this, void 0, void 0, function* () {
+        var args = [
+            "build",
+            "appbundle"
+        ];
+        if (debugMode) {
+            args.push("--debug");
+        }
+        if (buildName) {
+            args.push("--build-name=" + buildName);
+        }
+        if (buildNumber) {
+            args.push("--build-number=" + buildNumber);
+        }
+        if (buildFlavour) {
+            args.push("--flavor=" + buildFlavour);
+        }
+        if (entryPoint) {
+            args.push("--target=" + entryPoint);
+        }
+        var result = yield task.exec(flutter, args);
+        if (result !== 0) {
+            throw new Error("aab build failed");
         }
     });
 }

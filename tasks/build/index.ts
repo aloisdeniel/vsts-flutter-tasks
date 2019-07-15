@@ -27,7 +27,7 @@ async function main(): Promise<void> {
     let buildName = task.getInput('buildName', false);
     let buildNumber = task.getInput('buildNumber', false);
     let buildFlavour = task.getInput('buildFlavour', false);
-	let entryPoint = task.getInput('entryPoint', false);
+    let entryPoint = task.getInput('entryPoint', false);
 
     // 5. Builds
     if (target === "all" || target === "ios") {
@@ -39,6 +39,10 @@ async function main(): Promise<void> {
     if (target === "all" || target === "apk") {
         let targetPlatform = task.getInput('apkTargetPlatform', false);
         await buildApk(flutterPath, targetPlatform, buildName, buildNumber, debugMode, buildFlavour, entryPoint);
+    }
+
+    if (target === "all" || target === "aab") {
+        await buildAab(flutterPath, buildName, buildNumber, debugMode, buildFlavour, entryPoint);
     }
 
     task.setResult(task.TaskResult.Succeeded, "Application built");
@@ -70,8 +74,8 @@ async function buildApk(flutter: string, targetPlatform?: string, buildName?: st
     if (buildFlavour) {
         args.push("--flavor=" + buildFlavour);
     }
-	
-	if (entryPoint) {
+
+    if (entryPoint) {
         args.push("--target=" + entryPoint);
     }
 
@@ -79,6 +83,40 @@ async function buildApk(flutter: string, targetPlatform?: string, buildName?: st
 
     if (result !== 0) {
         throw new Error("apk build failed");
+    }
+}
+
+async function buildAab(flutter: string, buildName?: string, buildNumber?: string, debugMode?: boolean, buildFlavour?: string, entryPoint?: string) {
+
+    var args = [
+        "build",
+        "appbundle"
+    ];
+
+    if (debugMode) {
+        args.push("--debug");
+    }
+
+    if (buildName) {
+        args.push("--build-name=" + buildName);
+    }
+
+    if (buildNumber) {
+        args.push("--build-number=" + buildNumber);
+    }
+
+    if (buildFlavour) {
+        args.push("--flavor=" + buildFlavour);
+    }
+
+    if (entryPoint) {
+        args.push("--target=" + entryPoint);
+    }
+
+    var result = await task.exec(flutter, args);
+
+    if (result !== 0) {
+        throw new Error("aab build failed");
     }
 }
 
