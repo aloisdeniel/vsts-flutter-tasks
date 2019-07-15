@@ -33,20 +33,24 @@ function main() {
         let buildName = task.getInput('buildName', false);
         let buildNumber = task.getInput('buildNumber', false);
         let buildFlavour = task.getInput('buildFlavour', false);
+        let entryPoint = task.getInput('entryPoint', false);
         // 5. Builds
         if (target === "all" || target === "ios") {
             let targetPlatform = task.getInput('iosTargetPlatform', false);
             let codesign = task.getBoolInput('iosCodesign', false);
-            yield buildIpa(flutterPath, targetPlatform == "simulator", codesign, buildName, buildNumber, debugMode, buildFlavour);
+            yield buildIpa(flutterPath, targetPlatform == "simulator", codesign, buildName, buildNumber, debugMode, buildFlavour, entryPoint);
         }
         if (target === "all" || target === "apk") {
             let targetPlatform = task.getInput('apkTargetPlatform', false);
-            yield buildApk(flutterPath, targetPlatform, buildName, buildNumber, debugMode, buildFlavour);
+            yield buildApk(flutterPath, targetPlatform, buildName, buildNumber, debugMode, buildFlavour, entryPoint);
+        }
+        if (target === "all" || target === "aab") {
+            yield buildAab(flutterPath, buildName, buildNumber, debugMode, buildFlavour, entryPoint);
         }
         task.setResult(task.TaskResult.Succeeded, "Application built");
     });
 }
-function buildApk(flutter, targetPlatform, buildName, buildNumber, debugMode, buildFlavour) {
+function buildApk(flutter, targetPlatform, buildName, buildNumber, debugMode, buildFlavour, entryPoint) {
     return __awaiter(this, void 0, void 0, function* () {
         var args = [
             "build",
@@ -67,13 +71,43 @@ function buildApk(flutter, targetPlatform, buildName, buildNumber, debugMode, bu
         if (buildFlavour) {
             args.push("--flavor=" + buildFlavour);
         }
+        if (entryPoint) {
+            args.push("--target=" + entryPoint);
+        }
         var result = yield task.exec(flutter, args);
         if (result !== 0) {
             throw new Error("apk build failed");
         }
     });
 }
-function buildIpa(flutter, simulator, codesign, buildName, buildNumber, debugMode, buildFlavour) {
+function buildAab(flutter, buildName, buildNumber, debugMode, buildFlavour, entryPoint) {
+    return __awaiter(this, void 0, void 0, function* () {
+        var args = [
+            "build",
+            "appbundle"
+        ];
+        if (debugMode) {
+            args.push("--debug");
+        }
+        if (buildName) {
+            args.push("--build-name=" + buildName);
+        }
+        if (buildNumber) {
+            args.push("--build-number=" + buildNumber);
+        }
+        if (buildFlavour) {
+            args.push("--flavor=" + buildFlavour);
+        }
+        if (entryPoint) {
+            args.push("--target=" + entryPoint);
+        }
+        var result = yield task.exec(flutter, args);
+        if (result !== 0) {
+            throw new Error("aab build failed");
+        }
+    });
+}
+function buildIpa(flutter, simulator, codesign, buildName, buildNumber, debugMode, buildFlavour, entryPoint) {
     return __awaiter(this, void 0, void 0, function* () {
         var args = [
             "build",
@@ -99,6 +133,9 @@ function buildIpa(flutter, simulator, codesign, buildName, buildNumber, debugMod
         }
         if (buildNumber) {
             args.push("--build-number=" + buildNumber);
+        }
+        if (entryPoint) {
+            args.push("--target=" + entryPoint);
         }
         if (!simulator) {
             if (buildFlavour) {
