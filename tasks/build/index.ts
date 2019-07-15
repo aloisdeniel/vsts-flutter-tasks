@@ -103,6 +103,9 @@ async function buildIpa(flutter: string, simulator?: boolean, codesign?: boolean
     else if (codesign) {
         args.push("--codesign");
     }
+    else {
+        args.push("--no-codesign");
+    }
 
     if (buildName) {
         args.push("--build-name=" + buildName);
