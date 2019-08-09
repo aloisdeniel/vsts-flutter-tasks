@@ -1,6 +1,6 @@
 {
   "name": "flutterbuild",
-  "version": "1.2.13",
+  "version": "0.2.21",
   "description": "Flutter Build Task",
   "main": "index.js",
   "scripts": {

@@ -3,7 +3,7 @@
     "name": "FlutterBuild",
     "friendlyName": "Flutter Build",
     "description": "Build a Flutter application project.",
-    "helpMarkDown": "[More Information](https://go.microsoft.com/fwlink/?LinkID=613747)",
+    "helpMarkDown": "[More Information](https://github.com/aloisdeniel/vsts-flutter-tasks)",
     "category": "Build",
     "visibility": [
         "Build"
@@ -12,7 +12,7 @@
     "version": {
         "Major": 0,
         "Minor": 2,
-        "Patch": 16
+        "Patch": 21
     },
     "groups": [],
     "instanceNameFormat": "Flutter Build $(target)",
@@ -79,7 +79,7 @@
             "required": false,
             "helpMarkDown": "An `x.y.z` string used as the version number shown to users. For each new version of your app, you should provide a version number to differentiate it from previous versions."
         },
-		{
+        {
             "name": "entryPoint",
             "type": "string",
             "label": "Entry-point",
