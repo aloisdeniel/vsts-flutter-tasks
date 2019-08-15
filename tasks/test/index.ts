@@ -25,9 +25,10 @@ async function main(): Promise<void> {
     let updateGoldens = task.getBoolInput('updateGoldens', false);
     let concurrency = task.getInput('concurrency', false);
 	let coverage = task.getBoolInput('coverage', false);
+	let verbose = task.getBoolInput('verbose', false);
 
     // 5. Running tests
-    var results = await runTests(flutterPath, (concurrency ? Number(concurrency) : null), updateGoldens, testName, testPlainName, coverage);
+    var results = await runTests(flutterPath, (concurrency ? Number(concurrency) : null), updateGoldens, testName, testPlainName, coverage, verbose);
 
     // 6. Publishing tests
     await publishTests(results);
@@ -56,7 +57,7 @@ async function publishTests(results: any) {
     publisher.publish([ xmlPath ], false, "", "", "", true, "VSTS - Flutter");
 }
 
-async function runTests(flutter: string, concurrency?: number, updateGoldens?: boolean, name?: string, plainName?: string, coverage?: boolean) {
+async function runTests(flutter: string, concurrency?: number, updateGoldens?: boolean, name?: string, plainName?: string, coverage?: boolean, verbose?: boolean) {
     let testRunner = task.tool(flutter);
     testRunner.arg(['test', '--pub']);
 
@@ -78,6 +79,10 @@ async function runTests(flutter: string, concurrency?: number, updateGoldens?: b
 	
 	if (coverage) {
         testRunner.arg("--coverage");
+    }
+	
+	if (verbose) {
+        testRunner.arg("--verbose");
     }
 
     var currentSuite : any = null;
