@@ -10,7 +10,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const path = require("path");
 const xml2js = require("xml2js");
-const task = require("vsts-task-lib/task");
+const task = require("azure-pipelines-task-lib/task");
+const cp = require("child_process");
+const fs = require("fs");
+const readline = require("readline");
 const FLUTTER_TOOL_PATH_ENV_VAR = 'FlutterToolPath';
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -30,11 +33,10 @@ function main() {
         let testName = task.getInput('testName', false);
         let testPlainName = task.getInput('testPlainName', false);
         let updateGoldens = task.getBoolInput('updateGoldens', false);
-        let concurrency = task.getInput('concurrency', false);
         let coverage = task.getBoolInput('coverage', false);
         let verbose = task.getBoolInput('verbose', false);
         // 5. Running tests
-        var results = yield runTests(flutterPath, (concurrency ? Number(concurrency) : null), updateGoldens, testName, testPlainName, coverage, verbose);
+        var results = yield runTests(flutterPath, updateGoldens, testName, testPlainName, coverage, verbose);
         // 6. Publishing tests
         yield publishTests(results);
         if (results.isSuccess) {
@@ -59,121 +61,134 @@ function publishTests(results) {
         publisher.publish([xmlPath], false, "", "", "", true, "VSTS - Flutter");
     });
 }
-function runTests(flutter, concurrency, updateGoldens, name, plainName, coverage, verbose) {
+function runTests(flutter, updateGoldens, name, plainName, coverage, verbose) {
     return __awaiter(this, void 0, void 0, function* () {
-        let testRunner = task.tool(flutter);
-        testRunner.arg(['test', '--pub']);
-        if (updateGoldens) {
-            testRunner.arg("--update-goldens");
-        }
-        if (name) {
-            testRunner.arg("--name=" + name);
-        }
-        if (plainName) {
-            testRunner.arg("--plain-name=" + plainName);
-        }
-        if (concurrency) {
-            testRunner.arg("--concurrency=" + concurrency);
-        }
-        if (coverage) {
-            testRunner.arg("--coverage");
-        }
-        if (verbose) {
-            testRunner.arg("--verbose");
-        }
-
+        var commandParts = [
+            flutter,
+            "test --pub --concurrency=1",
+            updateGoldens ? "--update-goldens" : "",
+            name ? " --name=" + name : "",
+            plainName ? "--plan-name=" + plainName : "",
+            coverage ? "--coverage" : "",
+            verbose ? "--verbose" : "",
+        ];
         var results = {
-            isSuccess: false,
+            isSuccess: true,
             succeeded: 0,
             failed: 0,
             cases: []
         };
-        testRunner.on('stdout', line => {
-            const testSuiteRegex = /\s*\d\d:\d\d (\+\d+)?(\s+\-\d+)?:\s*loading\s*(.*\.dart)\s*/;
-            let loadingMatch = testSuiteRegex.exec(line);
-            if (!loadingMatch) {
-				createTestCase(results, line);
-            }
+        const fileName = "stdout.txt";
+        var command = commandParts.filter((part) => part != "").join(" ");
+        console.log("Running child process: " + command);
+        const childProcess = cp.exec(command);
+        childProcess.stdout.removeAllListeners('data');
+        childProcess.stdout.on('data', (data) => {
+            console.log(data);
         });
-        try {
-            yield testRunner.exec();
-            results.isSuccess = true;
-        }
-        catch (_a) { }
-        return results;
+        const writeStream = fs.createWriteStream(fileName);
+        childProcess.stdout.pipe(writeStream);
+        return new Promise((resolve, reject) => {
+            writeStream.on('close', () => {
+                const readInterface = readline.createInterface({
+                    input: fs.createReadStream(fileName)
+                });
+                readInterface.on('line', function (line) {
+                    const testSuiteRegex = /\s*\d\d:\d\d (\+\d+)?(\s+\-\d+)?:\s*loading\s*(.*\.dart)\s*/;
+                    let loadingMatch = testSuiteRegex.exec(line);
+                    if (!loadingMatch) {
+                        createTestCase(results, line);
+                    }
+                });
+                readInterface.on('close', function () {
+                    if (results.cases.length > 0) {
+                        results.cases[results.cases.length - 1].ended = new Date();
+                    }
+                    resolve(results);
+                });
+            });
+        });
     });
 }
 function createTestCase(results, output) {
-    const testRunRegex = /\s*\d\d:\d\d (\+\d+)?(\s+\-\d+)?:\s*(.*\.dart.*):\s*(.*)\s/;
-    let match = testRunRegex.exec(output);
+    var line = "" + output;
+    line = line.trim();
+    const testRunRegex = /\s*\d\d:\d\d (\+\d+)?(\s+\-\d+)?:\s*(.*\.dart.*):\s*(.*)/;
+    const unknownClassRegex = /\s*\d\d:\d\d (\+\d+)?(\s+\-\d+)?:\s*(.*\.\.\.)\s*(.*)/;
+    let match = testRunRegex.exec(line);
+    if (!match) {
+        match = unknownClassRegex.exec(line);
+    }
     if (match) {
-		var caseClass = match[3];
+        var caseClass = match[3];
         var caseTitle = match[4];
-		var newCase = {
-			caseClass: caseClass,
+        if (caseTitle.includes("(setUpAll)") || caseTitle.includes("tearDownAll")) {
+            return;
+        }
+        var newCase = {
+            caseClass: caseClass,
             caseTitle: caseTitle.trim(),
             isSuccess: true,
             started: new Date(),
             ended: new Date,
         };
-		var existingCase = results.cases.find((c) => c.caseClass == caseClass && c.caseTitle == newCase.caseTitle);
-		
+        var existingCase = results.cases.find((c) => c.caseClass == caseClass && c.caseTitle == newCase.caseTitle.replace(" [E]", ""));
         var successes = Number(match[1]);
         var failures = match[2] ? -Number(match[2]) : results.failed;
-
-        if (results.succeeded != successes) {
-            results.succeeded = successes;
-            newCase.isSuccess = true;
-        }
-        else if (results.failed != failures) {
-            results.failed = failures;
-            newCase.isSuccess = false;
-        }
-        if (!existingCase) {
+        if (existingCase == null) {
             if (results.cases.length > 0) {
                 results.cases[results.cases.length - 1].ended = newCase.started;
             }
             results.cases.push(newCase);
         }
+        else {
+            existingCase.caseTitle = newCase.caseTitle;
+            if (results.succeeded != successes) {
+                existingCase.isSuccess = true;
+            }
+            else if (results.failed != failures) {
+                existingCase.isSuccess = false;
+                results.isSuccess = false;
+            }
+        }
+        results.succeeded = successes;
+        results.failed = failures;
     }
 }
 function createJunitResults(results) {
     var testSuites = [];
-
-	var testCases = [];
-	results.cases.forEach(c => {
-		var duration = (c.ended.getTime() - c.started.getTime());
-		var s = (duration / 1000);
-		var testCase = {
-			"$": {
-				"name": c.caseTitle,
-				"classname": c.caseClass,
-				"time": s,
-			}
-		};
-		if (!c.isSuccess) {
-			testCase["failure"] = {
-				"$": {
-					"type": "FlutterError",
-				}
-			};
-		}
-		testCases.push(testCase);
-	});
-	
-	var testSuite = {
-		"$": {
-			"name": "Test Suite",
-			"timestamp": new Date().toISOString(),
-			"errors": 0,
-			"skipped": 0,
-			"failures": results.failed,
-			"tests": (results.failed + results.succeeded)
-		},
-		"testcase": testCases
-	};
-	testSuites.push(testSuite);
-
+    var testCases = [];
+    results.cases.forEach(c => {
+        var duration = (c.ended.getTime() - c.started.getTime());
+        var s = (duration / 1000);
+        var testCase = {
+            "$": {
+                "name": c.caseTitle,
+                "classname": c.caseClass,
+                "time": s,
+            }
+        };
+        if (!c.isSuccess) {
+            testCase["failure"] = {
+                "$": {
+                    "type": "FlutterError",
+                }
+            };
+        }
+        testCases.push(testCase);
+    });
+    var testSuite = {
+        "$": {
+            "name": "Test Suite",
+            "timestamp": new Date().toISOString(),
+            "errors": 0,
+            "skipped": 0,
+            "failures": results.failed,
+            "tests": (results.failed + results.succeeded)
+        },
+        "testcase": testCases
+    };
+    testSuites.push(testSuite);
     return {
         "testsuites": {
             "testsuite": testSuites

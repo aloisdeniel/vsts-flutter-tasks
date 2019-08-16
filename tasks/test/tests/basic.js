@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const path = require("path");
 const fs = require("fs");
-const mr = require("vsts-task-lib/mock-run");
+const mr = require("azure-pipelines-task-lib/mock-run");
 const taskPath = path.join(__dirname, "../index.js");
 var runner = new mr.TaskMockRunner(taskPath);
 function assertDirectory(path) {
@@ -25,6 +25,6 @@ assertDirectory(process.env["AGENT_TEMPDIRECTORY"] = path.join(agentPath, "temp"
 assertDirectory(process.env["AGENT_BUILDDIRECTORY"] = path.join(agentPath, "build"));
 // Run install tests
 process.env["FlutterToolPath"] = "D:\\flutter\\bin"; //path.join(agentPath, "tools", "Flutter", "0.8.2-beta", "macos", "flutter", "bin");
-runner.setInput("projectDirectory", "D:\\IC3D Media\\app_flutter");//path.join(rootPath, "sample_project"));
+runner.setInput("projectDirectory", "D:\\IC3D Media\\app_flutter"); //path.join(rootPath, "sample_project"));
 runner.setInput("coverage", "true");
 runner.run(true);

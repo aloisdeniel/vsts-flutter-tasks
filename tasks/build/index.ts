@@ -27,7 +27,7 @@ async function main(): Promise<void> {
     let buildName = task.getInput('buildName', false);
     let buildNumber = task.getInput('buildNumber', false);
     let buildFlavour = task.getInput('buildFlavour', false);
-	let entryPoint = task.getInput('entryPoint', false);
+    let entryPoint = task.getInput('entryPoint', false);
 
     // 5. Builds
     if (target === "all" || target === "ios") {
@@ -40,8 +40,8 @@ async function main(): Promise<void> {
         let targetPlatform = task.getInput('apkTargetPlatform', false);
         await buildApk(flutterPath, targetPlatform, buildName, buildNumber, debugMode, buildFlavour, entryPoint);
     }
-	
-	if (target === "all" || target === "aab") {
+
+    if (target === "all" || target === "aab") {
         await buildAab(flutterPath, buildName, buildNumber, debugMode, buildFlavour, entryPoint);
     }
 
@@ -74,8 +74,8 @@ async function buildApk(flutter: string, targetPlatform?: string, buildName?: st
     if (buildFlavour) {
         args.push("--flavor=" + buildFlavour);
     }
-	
-	if (entryPoint) {
+
+    if (entryPoint) {
         args.push("--target=" + entryPoint);
     }
 
@@ -108,8 +108,8 @@ async function buildAab(flutter: string, buildName?: string, buildNumber?: strin
     if (buildFlavour) {
         args.push("--flavor=" + buildFlavour);
     }
-	
-	if (entryPoint) {
+
+    if (entryPoint) {
         args.push("--target=" + entryPoint);
     }
 
@@ -149,8 +149,8 @@ async function buildIpa(flutter: string, simulator?: boolean, codesign?: boolean
     if (buildNumber) {
         args.push("--build-number=" + buildNumber);
     }
-	
-	if (entryPoint) {
+
+    if (entryPoint) {
         args.push("--target=" + entryPoint);
     }
 
