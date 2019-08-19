@@ -103,7 +103,7 @@ function buildAab(flutter, buildName, buildNumber, debugMode, buildFlavour, entr
         }
         var result = yield task.exec(flutter, args);
         if (result !== 0) {
-            throw new Error("apk build failed");
+            throw new Error("aab build failed");
         }
     });
 }
@@ -124,6 +124,9 @@ function buildIpa(flutter, simulator, codesign, buildName, buildNumber, debugMod
         }
         else if (codesign) {
             args.push("--codesign");
+        }
+        else {
+            args.push("--no-codesign");
         }
         if (buildName) {
             args.push("--build-name=" + buildName);

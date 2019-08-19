@@ -3,7 +3,7 @@
     "name": "FlutterBuild",
     "friendlyName": "Flutter Build (Extended)",
     "description": "Build a Flutter application project.",
-    "helpMarkDown": "[More Information](https://go.microsoft.com/fwlink/?LinkID=613747)",
+    "helpMarkDown": "[More Information](https://github.com/aloisdeniel/vsts-flutter-tasks)",
     "category": "Build",
     "visibility": [
         "Build"
@@ -27,8 +27,8 @@
             "options": {
                 "all": "All",
                 "ios": "iOS",
-                "apk": "Android (deprecated)",
-				"aab": "Android App Bundle"
+                "apk": "Android (apk)",
+                "aab": "Android (aab)"
             }
         },
         {
@@ -80,6 +80,14 @@
             "helpMarkDown": "An `x.y.z` string used as the version number shown to users. For each new version of your app, you should provide a version number to differentiate it from previous versions."
         },
 		{
+            "name": "entryPoint",
+            "type": "string",
+            "label": "Entry-point",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "The main entry-point file of the application, as run on the device. (defaults to 'lib/main.dart')"
+        },
+        {
             "name": "entryPoint",
             "type": "string",
             "label": "Entry-point",

@@ -116,7 +116,7 @@ async function buildAab(flutter: string, buildName?: string, buildNumber?: strin
     var result = await task.exec(flutter, args);
 
     if (result !== 0) {
-        throw new Error("apk build failed");
+        throw new Error("aab build failed");
     }
 }
 
@@ -140,6 +140,9 @@ async function buildIpa(flutter: string, simulator?: boolean, codesign?: boolean
     }
     else if (codesign) {
         args.push("--codesign");
+    }
+    else {
+        args.push("--no-codesign");
     }
 
     if (buildName) {
