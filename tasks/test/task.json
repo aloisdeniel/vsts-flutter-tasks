@@ -45,21 +45,21 @@
             "required": false,
             "helpMarkDown": "Whether matchesGoldenFile() calls within your test methods should update the golden files rather than test for an existing match."
         },
-        {
-            "name": "concurrency",
-            "type": "string",
-            "label": "Concurrency",
-            "defaultValue": "",
-            "required": false,
-            "helpMarkDown": "The number of concurrent test processes to run. (defaults to '6')"
-        },
-        {
+		{
             "name": "coverage",
             "type": "boolean",
             "label": "Coverage",
             "defaultValue": false,
             "required": false,
             "helpMarkDown": "Whether to collect code coverage information."
+        },
+		{
+            "name": "verbose",
+            "type": "boolean",
+            "label": "Verbose",
+            "defaultValue": false,
+            "required": false,
+            "helpMarkDown": "Whether to log verbose information."
         }
     ],
     "execution": {

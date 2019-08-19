@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const path = require("path");
 const fs = require("fs");
-const mr = require("vsts-task-lib/mock-run");
+const mr = require("azure-pipelines-task-lib/mock-run");
 const taskPath = path.join(__dirname, "../index.js");
 var runner = new mr.TaskMockRunner(taskPath);
 function assertDirectory(path) {
@@ -26,4 +26,6 @@ assertDirectory(process.env["AGENT_BUILDDIRECTORY"] = path.join(agentPath, "buil
 // Run install tests
 process.env["FlutterToolPath"] = path.join(agentPath, "tools", "Flutter", "0.8.2-beta", "macos", "flutter", "bin");
 runner.setInput("projectDirectory", path.join(rootPath, "sample_project"));
+// runner.setInput("coverage", "true");
+// runner.setInput("verbose", "true");
 runner.run(true);
