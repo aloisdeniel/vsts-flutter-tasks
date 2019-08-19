@@ -154,20 +154,16 @@ function createTestCase(results, data, time) {
             if (results.cases.length > 0) {
                 results.cases[results.cases.length - 1].ended = newCase.started;
             }
+            newCase.isSuccess = results.failed == failures;
             results.cases.push(newCase);
         }
         else {
             existingCase.caseTitle = newCase.caseTitle;
-            if (results.succeeded != successes) {
-                existingCase.isSuccess = true;
-            }
-            else if (results.failed != failures) {
-                existingCase.isSuccess = false;
-                results.isSuccess = false;
-            }
+            existingCase.isSuccess = results.failed == failures;
         }
         results.succeeded = successes;
         results.failed = failures;
+        results.isSuccess = results.failed == 0;
     }
 }
 function createJunitResults(results) {
