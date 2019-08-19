@@ -27,4 +27,5 @@ assertDirectory(process.env["AGENT_BUILDDIRECTORY"] = path.join(agentPath, "buil
 process.env["FlutterToolPath"] = "D:\\flutter\\bin"; //path.join(agentPath, "tools", "Flutter", "0.8.2-beta", "macos", "flutter", "bin");
 runner.setInput("projectDirectory", "D:\\IC3D Media\\app_flutter"); //path.join(rootPath, "sample_project"));
 runner.setInput("coverage", "true");
+// runner.setInput("verbose", "true");
 runner.run(true);

@@ -30,6 +30,7 @@ process.env["FlutterToolPath"] = "D:\\flutter\\bin"; //path.join(agentPath, "too
 
 runner.setInput("projectDirectory", "D:\\IC3D Media\\app_flutter");//path.join(rootPath, "sample_project"));
 runner.setInput("coverage", "true");
+// runner.setInput("verbose", "true");
 
 runner.run(true);
 

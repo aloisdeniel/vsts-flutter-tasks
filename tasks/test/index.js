@@ -12,8 +12,6 @@ const path = require("path");
 const xml2js = require("xml2js");
 const task = require("azure-pipelines-task-lib/task");
 const cp = require("child_process");
-const fs = require("fs");
-const readline = require("readline");
 const FLUTTER_TOOL_PATH_ENV_VAR = 'FlutterToolPath';
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -78,63 +76,80 @@ function runTests(flutter, updateGoldens, name, plainName, coverage, verbose) {
             failed: 0,
             cases: []
         };
-        const fileName = "stdout.txt";
         var command = commandParts.filter((part) => part != "").join(" ");
         console.log("Running child process: " + command);
         const childProcess = cp.exec(command);
         childProcess.stdout.removeAllListeners('data');
+        var buffer = [];
         childProcess.stdout.on('data', (data) => {
+            data = data.trim();
+            buffer.push({
+                data: data,
+                time: new Date()
+            });
             console.log(data);
         });
-        const writeStream = fs.createWriteStream(fileName);
-        childProcess.stdout.pipe(writeStream);
         return new Promise((resolve, reject) => {
-            writeStream.on('close', () => {
-                const readInterface = readline.createInterface({
-                    input: fs.createReadStream(fileName)
-                });
-                readInterface.on('line', function (line) {
+            childProcess.stdout.on('close', () => {
+                buffer.forEach(item => {
+                    const verboseRegex = /^\[.*/; // Filter out lines that start with a '[', since those are verbose lines
+                    let verboseMatch = verboseRegex.exec(item.data);
                     const testSuiteRegex = /\s*\d\d:\d\d (\+\d+)?(\s+\-\d+)?:\s*loading\s*(.*\.dart)\s*/;
-                    let loadingMatch = testSuiteRegex.exec(line);
-                    if (!loadingMatch) {
-                        createTestCase(results, line);
+                    let loadingMatch = testSuiteRegex.exec(item.data);
+                    if (!verboseMatch) {
+                        if (!loadingMatch) {
+                            createTestCase(results, item.data, item.time);
+                        }
                     }
                 });
-                readInterface.on('close', function () {
-                    if (results.cases.length > 0) {
-                        results.cases[results.cases.length - 1].ended = new Date();
-                    }
-                    resolve(results);
-                });
+                if (results.cases.length > 0) {
+                    results.cases[results.cases.length - 1].ended = new Date();
+                }
+                resolve(results);
             });
         });
     });
 }
-function createTestCase(results, output) {
-    var line = "" + output;
-    line = line.trim();
-    const testRunRegex = /\s*\d\d:\d\d (\+\d+)?(\s+\-\d+)?:\s*(.*\.dart.*):\s*(.*)/;
+function createTestCase(results, data, time) {
+    // '00:00 +0 <C:\dir\file.dart>: <test name>'
+    const caseRegex = /\s*\d\d:\d\d (\+\d+)?(\s+\-\d+)?:\s*(.*\.dart.*):\s*(.*)/;
+    // '00:00 +0 <C:\dir ... > <test name>'
     const unknownClassRegex = /\s*\d\d:\d\d (\+\d+)?(\s+\-\d+)?:\s*(.*\.\.\.)\s*(.*)/;
-    let match = testRunRegex.exec(line);
-    if (!match) {
-        match = unknownClassRegex.exec(line);
+    // '00:00 +0 <test name>', except for '00:00 +0 All tests passed!' or '00:00 +0 Some tests failed.'
+    const noClassRegex = /^(?!.*(All tests passed!|Some tests failed\.).*)\s*\d\d:\d\d (\+\d+)?(\s+\-\d+)?:\s*(.*)\s*/;
+    var caseTitle = "";
+    var caseClass = "unknown";
+    let match = caseRegex.exec(data);
+    if (match) {
+        caseClass = match[3];
+        caseTitle = match[4];
+    }
+    else {
+        match = unknownClassRegex.exec(data);
+        if (match) {
+            caseTitle = match[4];
+        }
+        else {
+            match = noClassRegex.exec(data);
+            if (match) {
+                caseTitle = match[4];
+            }
+        }
     }
     if (match) {
-        var caseClass = match[3];
-        var caseTitle = match[4];
-        if (caseTitle.includes("(setUpAll)") || caseTitle.includes("tearDownAll")) {
-            return;
-        }
         var newCase = {
-            caseClass: caseClass,
+            caseClass: caseClass.trim(),
             caseTitle: caseTitle.trim(),
             isSuccess: true,
-            started: new Date(),
+            started: time,
             ended: new Date,
         };
         var existingCase = results.cases.find((c) => c.caseClass == caseClass && c.caseTitle == newCase.caseTitle.replace(" [E]", ""));
         var successes = Number(match[1]);
         var failures = match[2] ? -Number(match[2]) : results.failed;
+        if (results.failed == failures && (caseTitle.includes("(setUpAll)") || caseTitle.includes("tearDownAll"))) {
+            return;
+        }
         if (existingCase == null) {
             if (results.cases.length > 0) {
                 results.cases[results.cases.length - 1].ended = newCase.started;
