@@ -59,7 +59,7 @@
             "label": "Verbose",
             "defaultValue": false,
             "required": false,
-            "helpMarkDown": "Whether to log verbose information."
+            "helpMarkDown": "Whether to log verbose information. *Note: this may skew test results a bit (more test cases), since 'flutter test --verbose' verbose logs seem to sometimes get printed on the same line as non-verbose logs.*"
         }
     ],
     "execution": {
