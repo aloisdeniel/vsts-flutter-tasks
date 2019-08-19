@@ -2,8 +2,6 @@ import * as path from "path";
 import * as xml2js from "xml2js";
 import * as task from "azure-pipelines-task-lib/task";
 import * as cp from 'child_process';
-import * as fs from 'fs';
-import * as readline from 'readline';
 
 const FLUTTER_TOOL_PATH_ENV_VAR: string = 'FlutterToolPath';
 
@@ -78,35 +76,36 @@ async function runTests(flutter: string, updateGoldens?: boolean, name?: string,
     };
 
     var command = commandParts.filter((part) => part != "").join(" ");
-
     console.log("Running child process: " + command);
-
     const childProcess = cp.exec(command);
-    childProcess.stdout.removeAllListeners('data');
 
     var buffer = [];
-
+    childProcess.stdout.removeAllListeners('data');
     childProcess.stdout.on('data', (data) => {
-        data = data.trim();
-        buffer.push({
-            data: data,
-            time: new Date()
-        });
-        console.log(data);
-    })
+        data.split(/\s{3,}/g)
+            .map(line => line.trim())
+            .filter(line => line.length > 0)
+            .forEach(line => {
+                buffer.push({
+                    'data': line,
+                    'started': new Date()
+                });
+
+                console.log(line);
+            });
+    });
 
     return new Promise((resolve, reject) => {
         childProcess.stdout.on('close', () => {
+            const verboseRegex = /^\[.*/; // Filter out lines that start with a '[', since those are verbose lines
+            const testSuiteRegex = /\s*\d\d:\d\d (\+\d+)?(\s+\-\d+)?:\s*loading\s*(.*\.dart)\s*/;
 
             buffer.forEach(item => {
-                const verboseRegex = /^\[.*/; // Filter out lines that start with a '[', since those are verbose lines
                 let verboseMatch = verboseRegex.exec(item.data);
-
-                const testSuiteRegex = /\s*\d\d:\d\d (\+\d+)?(\s+\-\d+)?:\s*loading\s*(.*\.dart)\s*/;
                 let loadingMatch = testSuiteRegex.exec(item.data);
                 if (!verboseMatch) {
                     if (!loadingMatch) {
-                        createTestCase(results, item.data, item.time);
+                        createTestCase(results, item.data, item.started);
                     }
                 }
             });
@@ -119,11 +118,11 @@ async function runTests(flutter: string, updateGoldens?: boolean, name?: string,
     });
 }
 
-function createTestCase(results, data, time) {
+function createTestCase(results, data, started) {
     // '00:00 +0 <C:\dir\file.dart>: <test name>'
     const caseRegex = /\s*\d\d:\d\d (\+\d+)?(\s+\-\d+)?:\s*(.*\.dart.*):\s*(.*)/;
     // '00:00 +0 <C:\dir ... > <test name>'
-    const unknownClassRegex = /\s*\d\d:\d\d (\+\d+)?(\s+\-\d+)?:\s*(.*\.\.\.)\s*(.*)/;
+    const unknownClassRegex = /\s*\d\d:\d\d (\+\d+)?(\s+\-\d+)?:\s*(.*\.{3})\s*(.*)/;
     // '00:00 +0 <test name>', except for '00:00 +0 All tests passed!' or '00:00 +0 Some tests failed.'
     const noClassRegex = /^(?!.*(All tests passed!|Some tests failed\.).*)\s*\d\d:\d\d (\+\d+)?(\s+\-\d+)?:\s*(.*)\s*/;
 
@@ -151,7 +150,7 @@ function createTestCase(results, data, time) {
             caseClass: caseClass.trim(),
             caseTitle: caseTitle.trim(),
             isSuccess: true,
-            started: time,
+            started: started,
             ended: new Date,
         };
         var existingCase = results.cases.find((c) => c.caseClass == caseClass && c.caseTitle == newCase.caseTitle.replace(" [E]", ""));
