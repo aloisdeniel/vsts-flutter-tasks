@@ -1,6 +1,6 @@
 import * as path from 'path';
 import * as fs from 'fs';
-import * as mr from 'vsts-task-lib/mock-run';
+import * as mr from 'azure-pipelines-task-lib/mock-run';
 
 const taskPath = path.join(__dirname, "../index.js");
 var runner = new mr.TaskMockRunner(taskPath);

@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/aloisdeniel/vsts-flutter-tasks#readme",
   "dependencies": {
-    "azure-pipelines-task-lib": "^2.8.0"
+    "azure-pipelines-task-lib": "^2.8.0",
+    "azure-pipelines-tool-lib": "*"
   }
 }
