@@ -91,11 +91,12 @@
             "name": "apkTargetPlatform",
             "type": "pickList",
             "label": "Target platform architecture",
-            "defaultValue": "android-arm",
+            "defaultValue": "all",
             "required": false,
             "helpMarkDown": "Sets the target android platform architecture",
             "visibleRule": "target = apk",
             "options": {
+                "all": false,
                 "android-arm": "Arm",
                 "android-arm64": "Arm64"
             }
