@@ -55,6 +55,31 @@ Launch tests and publish a report as build test results.
 * _(Optional)_. The number of `concurrent` test processes to run. (defaults to `6`)
 
 
+## FAQ
+
+
+> Flutter command isn't recognized ?
+
+Make sure that you have a `Flutter Install` at the beginning of your definition.
+
+> Can I run a custom Flutter command ?
+
+Yes, right after the `Flutter Install` task, a `FlutterToolPath` environment variable points to the `bin` of the Flutter SDK directory. You just have to use `$(FlutterToolPath)` in your following tasks.
+
+> Can I run Dart program ?
+
+Yes, actually a Dart runtime is embedded with Flutter tools (in the `/cache/dart-sdk/bin` subdirectory). 
+
+A task example :
+
+```yaml
+- task: CmdLine@2
+  displayName: 'Execute Dart program'
+  inputs:
+    script: '$(FlutterToolPath)/cache/dart-sdk/bin/dart program.dart arg1 arg2'
+    workingDirectory: 'src'
+```
+
 ## License
 
 [MIT](https://raw.githubusercontent.com/aloisdeniel/vsts-flutter-tasks/master/LICENSE)
