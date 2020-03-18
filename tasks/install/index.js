@@ -38,18 +38,18 @@ function main() {
             storageHostType = storageHostParam;
         }
         // 3. Check if already available
-        task.debug(`Trying to get (${FLUTTER_TOOL_NAME},${versionSpec}, ${arch}) tool from local cache`);
+        console.log(`Trying to get (${FLUTTER_TOOL_NAME},${versionSpec}, ${arch}) tool from local cache`);
         let toolPath = tool.findLocalTool(FLUTTER_TOOL_NAME, versionSpec, arch);
         if (!toolPath) {
             // 4.1. Downloading SDK
             yield downloadAndCacheSdk(versionSpec, channel, arch);
             // 4.2. Verifying that tool is now available
-            task.debug(`Trying again to get (${FLUTTER_TOOL_NAME},${versionSpec}, ${arch}) tool from local cache`);
+            console.log(`Trying again to get (${FLUTTER_TOOL_NAME},${versionSpec}, ${arch}) tool from local cache`);
             toolPath = tool.findLocalTool(FLUTTER_TOOL_NAME, versionSpec, arch);
         }
         // 5. Creating the environment variable
         let fullFlutterPath = path.join(toolPath, FLUTTER_EXE_RELATIVEPATH);
-        task.debug(`Set ${FLUTTER_TOOL_PATH_ENV_VAR} with '${fullFlutterPath}'`);
+        console.log(`Set ${FLUTTER_TOOL_PATH_ENV_VAR} with '${fullFlutterPath}'`);
         task.setVariable(FLUTTER_TOOL_PATH_ENV_VAR, fullFlutterPath);
         task.setResult(task.TaskResult.Succeeded, "Installed");
     });
@@ -65,26 +65,26 @@ function downloadAndCacheSdk(versionSpec, channel, arch) {
     return __awaiter(this, void 0, void 0, function* () {
         // 1. Download SDK archive
         let downloadUrl = `https://${storageHosts[storageHostType]}/flutter_infra/releases/${channel}/${arch}/flutter_${arch}_v${versionSpec}.zip`;
-        task.debug(`Starting download archive from '${downloadUrl}'`);
+        console.log(`Starting download archive from '${downloadUrl}'`);
         var bundleZip = yield tool.downloadTool(downloadUrl);
-        task.debug(`Succeeded to download '${bundleZip}' archive from '${downloadUrl}'`);
+        console.log(`Succeeded to download '${bundleZip}' archive from '${downloadUrl}'`);
         // 2. Extracting SDK bundle
-        task.debug(`Extracting '${downloadUrl}' archive`);
+        console.log(`Extracting '${downloadUrl}' archive`);
         var bundleDir = yield tool.extractZip(bundleZip);
-        task.debug(`Extracted to '${bundleDir}' '${downloadUrl}' archive`);
+        console.log(`Extracted to '${bundleDir}' '${downloadUrl}' archive`);
         // 3. Adding SDK bundle to cache
-        task.debug(`Adding '${bundleDir}' to cache (${FLUTTER_TOOL_NAME},${versionSpec}, ${arch})`);
+        console.log(`Adding '${bundleDir}' to cache (${FLUTTER_TOOL_NAME},${versionSpec}, ${arch})`);
         tool.cacheDir(bundleDir, FLUTTER_TOOL_NAME, versionSpec, arch);
     });
 }
 function findLatestSdkVersion(channel, arch) {
     return __awaiter(this, void 0, void 0, function* () {
         var releasesUrl = `https://${storageHosts[storageHostType]}/flutter_infra/releases/releases_${arch}.json`;
-        task.debug(`Finding latest version from '${releasesUrl}'`);
+        console.log(`Finding latest version from '${releasesUrl}'`);
         var body = yield request.get(releasesUrl);
         var json = JSON.parse(body);
         var currentHash = json.current_release[channel];
-        task.debug(`Last version hash '${currentHash}'`);
+        console.log(`Last version hash '${currentHash}'`);
         var current = json.releases.find((item) => item.hash === currentHash);
         return current.version.substring(1); // removing leading 'v'
     });

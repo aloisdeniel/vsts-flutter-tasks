@@ -53,7 +53,7 @@
             "label": "StorageHost",
             "defaultValue": "original",
             "required": false,
-            "helpMarkDown": "Use the latest version of the Flutter SDK or a custom one.",
+            "helpMarkDown": "Choose storage host to download Flutter SDK from.",
             "options": {
                 "original": "storage.googleapis.com",
                 "china": "storage.flutter-io.cn"
