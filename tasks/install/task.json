@@ -46,6 +46,18 @@
             "required": true,
             "helpMarkDown": "The version of the SDK to use (in a <M>.<m>.<p> semver format, from (https://flutter.io/sdk-archive/).",
             "visibleRule": "version = custom"
+        },
+        {
+            "name": "storageHost",
+            "type": "pickList",
+            "label": "StorageHost",
+            "defaultValue": "original",
+            "required": false,
+            "helpMarkDown": "Use the latest version of the Flutter SDK or a custom one.",
+            "options": {
+                "original": "storage.googleapis.com",
+                "china": "storage.flutter-io.cn"
+            }
         }
     ],
     "execution": {
