@@ -1,12 +1,19 @@
 import * as path from 'path';
 import * as os from 'os';
 import * as request from 'request-promise';
-import * as task from "vsts-task-lib/task";
-import * as tool from 'vsts-task-tool-lib/tool';
+import * as task from "azure-pipelines-task-lib/task";
+import * as tool from 'azure-pipelines-tool-lib/tool';
 
 const FLUTTER_TOOL_NAME: string = 'Flutter';
 const FLUTTER_EXE_RELATIVEPATH = 'flutter/bin';
 const FLUTTER_TOOL_PATH_ENV_VAR: string = 'FlutterToolPath';
+
+type StorageHostType = 'original' | 'china';
+let storageHostType: StorageHostType = 'original';
+let storageHosts: { [key: string]: string } = {
+	'original': 'storage.googleapis.com',
+	'china': 'storage.flutter-io.cn', // https://flutter.dev/community/china
+};
 
 async function main(): Promise<void> {
 	// 1. Getting current platform identifier
@@ -19,6 +26,10 @@ async function main(): Promise<void> {
 	if (version === 'latest' || semVer === "")
 		semVer = await findLatestSdkVersion(channel, arch);
 	let versionSpec = `${semVer}-${channel}`;
+	const storageHostParam = task.getInput('storageHost', false) as StorageHostType;
+	if (storageHostParam === 'china') {
+		storageHostType = storageHostParam;
+	}
 
 	// 3. Check if already available
 	task.debug(`Trying to get (${FLUTTER_TOOL_NAME},${versionSpec}, ${arch}) tool from local cache`);
@@ -50,7 +61,7 @@ function findArchitecture() {
 
 async function downloadAndCacheSdk(versionSpec: string, channel: string, arch: string): Promise<void> {
 	// 1. Download SDK archive
-	let downloadUrl = `https://storage.googleapis.com/flutter_infra/releases/${channel}/${arch}/flutter_${arch}_v${versionSpec}.zip`;
+	let downloadUrl = `https://${storageHosts[storageHostType]}/flutter_infra/releases/${channel}/${arch}/flutter_${arch}_v${versionSpec}.zip`;
 	task.debug(`Starting download archive from '${downloadUrl}'`);
 	var bundleZip = await tool.downloadTool(downloadUrl);
 	task.debug(`Succeeded to download '${bundleZip}' archive from '${downloadUrl}'`);
@@ -66,7 +77,7 @@ async function downloadAndCacheSdk(versionSpec: string, channel: string, arch: s
 }
 
 async function findLatestSdkVersion(channel: string, arch: string): Promise<string> {
-	var releasesUrl = `https://storage.googleapis.com/flutter_infra/releases/releases_${arch}.json`;
+	var releasesUrl = `https://${storageHosts[storageHostType]}/flutter_infra/releases/releases_${arch}.json`;
 	task.debug(`Finding latest version from '${releasesUrl}'`);
 	var body = await request.get(releasesUrl);
 	var json = JSON.parse(body);
