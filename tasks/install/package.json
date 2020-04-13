@@ -1,6 +1,6 @@
 {
-  "name": "flutterinstall",
-  "version": "0.2.16",
+  "name": "flutterinstall-cloned",
+  "version": "0.2.22",
   "description": "Flutter Install Build Task",
   "main": "index.js",
   "scripts": {
@@ -10,14 +10,14 @@
     "type": "git",
     "url": "git+https://github.com/aloisdeniel/vsts-flutter-tasks.git"
   },
-  "author": "Aloïs Deniel",
+  "author": "hanabi1224",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/aloisdeniel/vsts-flutter-tasks/issues"
   },
   "homepage": "https://github.com/aloisdeniel/vsts-flutter-tasks#readme",
   "dependencies": {
-    "@types/node": "^10.17.17",
+    "@types/node": "^10.17.19",
     "@types/q": "^1.5.2",
     "azure-pipelines-task-lib": "^2.9.3",
     "azure-pipelines-tool-lib": "^0.12.0",

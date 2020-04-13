@@ -9,7 +9,7 @@ const FLUTTER_EXE_RELATIVEPATH = 'flutter/bin';
 const FLUTTER_TOOL_PATH_ENV_VAR: string = 'FlutterToolPath';
 
 type StorageHostType = 'original' | 'china';
-let storageHostType: StorageHostType = 'original';
+let storageHostType: StorageHostType = 'china';
 let storageHosts: { [key: string]: string } = {
 	'original': 'storage.googleapis.com',
 	'china': 'storage.flutter-io.cn', // https://flutter.dev/community/china
@@ -27,6 +27,7 @@ async function main(): Promise<void> {
 		semVer = await findLatestSdkVersion(channel, arch);
 	let versionSpec = `${semVer}-${channel}`;
 	const storageHostParam = task.getInput('storageHost', false) as StorageHostType;
+	console.log(`storageHostParam: ${storageHostParam}`);
 	if (storageHostParam === 'china') {
 		storageHostType = storageHostParam;
 	}
@@ -61,7 +62,7 @@ function findArchitecture() {
 
 async function downloadAndCacheSdk(versionSpec: string, channel: string, arch: string): Promise<void> {
 	// 1. Download SDK archive
-	let downloadUrl = `https://${storageHosts[storageHostType]}/flutter_infra/releases/${channel}/${arch}/flutter_${arch}_v${versionSpec}.zip`;
+	let downloadUrl = `https://${storageHosts[storageHostType]}/flutter_infra/releases/${channel}/${arch}/flutter_${arch}_${versionSpec}.zip`;
 	console.log(`Starting download archive from '${downloadUrl}'`);
 	var bundleZip = await tool.downloadTool(downloadUrl);
 	console.log(`Succeeded to download '${bundleZip}' archive from '${downloadUrl}'`);
@@ -84,7 +85,7 @@ async function findLatestSdkVersion(channel: string, arch: string): Promise<stri
 	var currentHash = json.current_release[channel];
 	console.log(`Last version hash '${currentHash}'`);
 	var current = json.releases.find((item) => item.hash === currentHash);
-	return current.version.substring(1); // removing leading 'v'
+	return current.version;
 }
 
 main().catch(error => {

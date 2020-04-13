@@ -17,7 +17,7 @@ const tool = require("azure-pipelines-tool-lib/tool");
 const FLUTTER_TOOL_NAME = 'Flutter';
 const FLUTTER_EXE_RELATIVEPATH = 'flutter/bin';
 const FLUTTER_TOOL_PATH_ENV_VAR = 'FlutterToolPath';
-let storageHostType = 'original';
+let storageHostType = 'china';
 let storageHosts = {
     'original': 'storage.googleapis.com',
     'china': 'storage.flutter-io.cn',
@@ -34,6 +34,7 @@ function main() {
             semVer = yield findLatestSdkVersion(channel, arch);
         let versionSpec = `${semVer}-${channel}`;
         const storageHostParam = task.getInput('storageHost', false);
+        console.log(`storageHostParam: ${storageHostParam}`);
         if (storageHostParam === 'china') {
             storageHostType = storageHostParam;
         }
@@ -64,7 +65,7 @@ function findArchitecture() {
 function downloadAndCacheSdk(versionSpec, channel, arch) {
     return __awaiter(this, void 0, void 0, function* () {
         // 1. Download SDK archive
-        let downloadUrl = `https://${storageHosts[storageHostType]}/flutter_infra/releases/${channel}/${arch}/flutter_${arch}_v${versionSpec}.zip`;
+        let downloadUrl = `https://${storageHosts[storageHostType]}/flutter_infra/releases/${channel}/${arch}/flutter_${arch}_${versionSpec}.zip`;
         console.log(`Starting download archive from '${downloadUrl}'`);
         var bundleZip = yield tool.downloadTool(downloadUrl);
         console.log(`Succeeded to download '${bundleZip}' archive from '${downloadUrl}'`);
@@ -86,7 +87,7 @@ function findLatestSdkVersion(channel, arch) {
         var currentHash = json.current_release[channel];
         console.log(`Last version hash '${currentHash}'`);
         var current = json.releases.find((item) => item.hash === currentHash);
-        return current.version.substring(1); // removing leading 'v'
+        return current.version;
     });
 }
 main().catch(error => {
