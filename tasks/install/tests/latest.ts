@@ -1,6 +1,6 @@
 import * as path from 'path';
 import * as fs from 'fs';
-import * as mr from 'vsts-task-lib/mock-run';
+import * as mr from 'azure-pipelines-task-lib/mock-run';
 
 const taskPath = path.join(__dirname, "../index.js");
 var runner = new mr.TaskMockRunner(taskPath);
@@ -27,5 +27,6 @@ assertDirectory(process.env["AGENT_BUILDDIRECTORY"] = path.join(agentPath, "buil
 
 runner.setInput("channel", "beta");
 runner.setInput("version", "latest");
+// runner.setInput("storageHost", "china");
 
 runner.run(true);

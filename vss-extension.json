@@ -1,18 +1,18 @@
 {
     "manifestVersion": 1,
-    "id": "flutter",
-    "version": "0.2.21",
+    "id": "flutter-cloned",
+    "version": "0.0.9",
     "name": "Flutter",
     "description": "Flutter extension for Azure DevOps",
-    "publisher": "aloisdeniel",
-    "public": true,
+    "publisher": "hanabi1224",
+    "public": false,
     "targets": [
         {
             "id": "Microsoft.VisualStudio.Services"
         }
     ],
     "categories": [
-        "Pipelines"
+        "Azure Pipelines"
     ],
     "icons": {
         "default": "icon.png"
@@ -46,45 +46,19 @@
             "path": "tasks/install"
         },
         {
-            "path": "tasks/build"
-        },
-        {
-            "path": "tasks/test"
-        },
-        {
             "path": "images",
             "addressable": true
         }
     ],
     "contributions": [
         {
-            "id": "flutter-install",
+            "id": "flutter-install-cloned",
             "type": "ms.vss-distributed-task.task",
             "targets": [
                 "ms.vss-distributed-task.tasks"
             ],
             "properties": {
                 "name": "tasks/install"
-            }
-        },
-        {
-            "id": "flutter-build",
-            "type": "ms.vss-distributed-task.task",
-            "targets": [
-                "ms.vss-distributed-task.tasks"
-            ],
-            "properties": {
-                "name": "tasks/build"
-            }
-        },
-        {
-            "id": "flutter-test",
-            "type": "ms.vss-distributed-task.task",
-            "targets": [
-                "ms.vss-distributed-task.tasks"
-            ],
-            "properties": {
-                "name": "tasks/test"
             }
         }
     ]

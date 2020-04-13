@@ -1,25 +1,31 @@
 {
-  "name": "flutterinstall",
-  "version": "0.2.13",
+  "name": "flutterinstall-cloned",
+  "version": "0.2.22",
   "description": "Flutter Install Build Task",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "tsc && node tests/latest.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/aloisdeniel/vsts-flutter-tasks.git"
   },
-  "author": "Aloïs Deniel",
+  "author": "hanabi1224",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/aloisdeniel/vsts-flutter-tasks/issues"
   },
   "homepage": "https://github.com/aloisdeniel/vsts-flutter-tasks#readme",
   "dependencies": {
-    "vsts-task-lib": "2.7.0",
-    "vsts-task-tool-lib": "*",
-    "request-promise": "*",
-    "request": "*"
+    "@types/node": "^10.17.19",
+    "@types/q": "^1.5.2",
+    "azure-pipelines-task-lib": "^2.9.3",
+    "azure-pipelines-tool-lib": "^0.12.0",
+    "request-promise": "^4.2.5",
+    "request": "^2.88.2"
+  },
+  "peerDependencies": {
+    "typescript": "^3.8.3",
+    "tfx-cli": "^0.7.11"
   }
 }
