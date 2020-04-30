@@ -84,7 +84,11 @@ async function findLatestSdkVersion(channel: string, arch: string): Promise<stri
 	var currentHash = json.current_release[channel];
 	task.debug(`Last version hash '${currentHash}'`);
 	var current = json.releases.find((item) => item.hash === currentHash);
-	return current.version.substring(1); // removing leading 'v'
+	var version = current.version;
+
+	// Old versions started with a v prefix, remove it if present
+	if (version.startsWith('v')) version = version.substring(1);
+	return version;
 }
 
 main().catch(error => {
