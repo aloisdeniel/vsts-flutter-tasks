@@ -11,6 +11,6 @@ steps:
     connectTo: 'VsTeam'
     connectedServiceName: 'Azure DevOps Marketplace'
     fileType: 'manifest'
-    publisherId: 'MichaelSoderman'
+    publisherId: 'aloisdeniel'
     extensionVisibility: 'public'
     extensionPricing: 'free'
