@@ -49,8 +49,19 @@ function findArchitecture() {
 }
 
 async function downloadAndCacheSdk(versionSpec: string, channel: string, arch: string): Promise<void> {
+	// Flutter had a 'v' prefix before the version number in the URL up until Flutter 1.17.
+	// From 1.17 and forward the v was dropped from the URL. This if-case adds backwards compatibility
+	//  with all Flutter versions from 2019 up until 1.17.
+	let versionPrefix = '';
+	for (let minor = 0; minor < 17; minor++) {
+		if (versionSpec.startsWith(`1.${minor}.`)) {
+			versionPrefix = 'v';
+			break;
+		}
+	}
+
 	// 1. Download SDK archive
-	let downloadUrl = `https://storage.googleapis.com/flutter_infra/releases/${channel}/${arch}/flutter_${arch}_v${versionSpec}.zip`;
+	let downloadUrl = `https://storage.googleapis.com/flutter_infra/releases/${channel}/${arch}/flutter_${arch}_${versionPrefix}${versionSpec}.zip`;
 	task.debug(`Starting download archive from '${downloadUrl}'`);
 	var bundleZip = await tool.downloadTool(downloadUrl);
 	task.debug(`Succeeded to download '${bundleZip}' archive from '${downloadUrl}'`);
@@ -73,7 +84,11 @@ async function findLatestSdkVersion(channel: string, arch: string): Promise<stri
 	var currentHash = json.current_release[channel];
 	task.debug(`Last version hash '${currentHash}'`);
 	var current = json.releases.find((item) => item.hash === currentHash);
-	return current.version.substring(1); // removing leading 'v'
+	var version = current.version;
+
+	// Old versions started with a v prefix, remove it if present
+	if (version.startsWith('v')) version = version.substring(1);
+	return version;
 }
 
 main().catch(error => {
