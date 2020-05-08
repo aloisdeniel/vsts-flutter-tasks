@@ -1,7 +1,5 @@
 import * as path from 'path';
 import * as os from 'os';
-import * as https from 'https'
-import { RequestOptions } from 'https'
 import * as task from "azure-pipelines-task-lib";
 import * as tool from 'azure-pipelines-tool-lib/tool';
 
@@ -96,39 +94,10 @@ main().catch(error => {
 	task.setResult(task.TaskResult.Failed, error);
 });
 
-
 async function getJSON(hostname: string, path: string): Promise<any> {
-	return new Promise<any>((resolve, reject) => {
-		let options: RequestOptions = {
-			hostname: hostname,
-			port: 443,
-			path: path,
-			method: 'GET',
-		};
-
-		const req = https.request(options, res => {
-			let data = '';
-
-			// A chunk of data has been recieved.
-			res.on('data', (chunk) => {
-				data += chunk;
-			});
-
-			// The whole response has been received. Print out the result.
-			res.on('end', () => {
-				try {
-					resolve(JSON.parse(data))
-				}
-				catch (e) {
-					reject(e);
-				}
-			});
-		})
-
-		req.on('error', error => {
-			reject(error);
-		})
-
-		req.end()
-	});
+	// Calls through https.request seems to fail on host environment ...
+	let curl: string = task.which('curl', true);
+	var args = ['-s', `https://${hostname}${path}`];
+	let response = task.execSync(curl, args);
+	return JSON.parse(response.stdout);
 }

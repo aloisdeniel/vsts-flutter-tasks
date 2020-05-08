@@ -11,7 +11,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const path = require("path");
 const os = require("os");
-const https = require("https");
 const task = require("azure-pipelines-task-lib");
 const tool = require("azure-pipelines-tool-lib/tool");
 const FLUTTER_TOOL_NAME = 'Flutter';
@@ -97,33 +96,10 @@ main().catch(error => {
 });
 function getJSON(hostname, path) {
     return __awaiter(this, void 0, void 0, function* () {
-        return new Promise((resolve, reject) => {
-            let options = {
-                hostname: hostname,
-                port: 443,
-                path: path,
-                method: 'GET',
-            };
-            const req = https.request(options, res => {
-                let data = '';
-                // A chunk of data has been recieved.
-                res.on('data', (chunk) => {
-                    data += chunk;
-                });
-                // The whole response has been received. Print out the result.
-                res.on('end', () => {
-                    try {
-                        resolve(JSON.parse(data));
-                    }
-                    catch (e) {
-                        reject(e);
-                    }
-                });
-            });
-            req.on('error', error => {
-                reject(error);
-            });
-            req.end();
-        });
+        // Calls through https.request seems to fail on host environment ...
+        let curl = task.which('curl', true);
+        var args = ['-s', `https://${hostname}${path}`];
+        let response = task.execSync(curl, args);
+        return JSON.parse(response.stdout);
     });
 }
