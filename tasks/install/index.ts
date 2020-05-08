@@ -1,10 +1,9 @@
 import * as path from 'path';
 import * as os from 'os';
-import * as bent from 'bent';
+import * as https from 'https'
+import { RequestOptions } from 'https'
 import * as task from "azure-pipelines-task-lib";
 import * as tool from 'azure-pipelines-tool-lib/tool';
-
-const getJSON = bent('json')
 
 const FLUTTER_TOOL_NAME: string = 'Flutter';
 const FLUTTER_EXE_RELATIVEPATH = 'flutter/bin';
@@ -57,8 +56,7 @@ function findArchitecture() {
 }
 
 async function findSdkInformation(channel: string, arch: string, version: string): Promise<{ downloadUrl: string, version: string }> {
-	let releasesUrl = `https://storage.googleapis.com/flutter_infra/releases/releases_${arch}.json`;
-	let json = await getJSON(releasesUrl);
+	let json = await getJSON('storage.googleapis.com', `/flutter_infra/releases/releases_${arch}.json`);
 	var current = null;
 	if (version === 'latest') {
 		let currentHash = json.current_release[channel];
@@ -97,3 +95,40 @@ async function downloadAndCacheSdk(sdkInfo: { downloadUrl: string, version: stri
 main().catch(error => {
 	task.setResult(task.TaskResult.Failed, error);
 });
+
+
+async function getJSON(hostname: string, path: string): Promise<any> {
+	return new Promise<any>((resolve, reject) => {
+		let options: RequestOptions = {
+			hostname: hostname,
+			port: 443,
+			path: path,
+			method: 'GET',
+		};
+
+		const req = https.request(options, res => {
+			let data = '';
+
+			// A chunk of data has been recieved.
+			res.on('data', (chunk) => {
+				data += chunk;
+			});
+
+			// The whole response has been received. Print out the result.
+			res.on('end', () => {
+				try {
+					resolve(JSON.parse(data))
+				}
+				catch (e) {
+					reject(e);
+				}
+			});
+		})
+
+		req.on('error', error => {
+			reject(error);
+		})
+
+		req.end()
+	});
+}

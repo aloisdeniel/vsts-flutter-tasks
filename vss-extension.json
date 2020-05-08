@@ -1,7 +1,7 @@
 {
     "manifestVersion": 1,
     "id": "flutter",
-    "version": "0.2.31",
+    "version": "0.2.33",
     "name": "Flutter",
     "description": "Flutter extension for Azure DevOps",
     "publisher": "aloisdeniel",
@@ -50,6 +50,9 @@
         },
         {
             "path": "tasks/test"
+        },
+        {
+            "path": "tasks/command"
         },
         {
             "path": "images",
