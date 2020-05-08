@@ -44,7 +44,7 @@ async function main(): Promise<void> {
     if (target === "all" || target === "aab") {
         await buildAab(flutterPath, buildName, buildNumber, debugMode, buildFlavour, entryPoint);
     }
-    
+
     if (target === "all" || target === "web") {
         await buildWeb(flutterPath);
     }
@@ -183,7 +183,7 @@ async function buildWeb(flutter: string) {
     var result = await task.exec(flutter, args);
 
     if (result !== 0) {
-        throw new Error("aab build failed");
+        throw new Error("web build failed");
     }
 }
 

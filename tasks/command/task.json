@@ -1,0 +1,34 @@
+{
+    "id": "d885c1e4-9aa1-4a16-b2ec-07db402304d4",
+    "name": "FlutterCommand",
+    "friendlyName": "Flutter Command",
+    "description": "Launch a custom Flutter command with custom arguments.",
+    "helpMarkDown": "[More Information](https://github.com/aloisdeniel/vsts-flutter-tasks)",
+    "category": "Build",
+    "visibility": [
+        "Build"
+    ],
+    "author": "Aloïs Deniel",
+    "version": {
+        "Major": 0,
+        "Minor": 2,
+        "Patch": 30
+    },
+    "groups": [],
+    "instanceNameFormat": "Flutter Command",
+    "inputs": [
+        {
+            "name": "arguments",
+            "type": "string",
+            "label": "Arguments",
+            "required": false,
+            "defaultValue": "",
+            "helpMarkDown": "Arguments passed to the flutter command."
+        }
+    ],
+    "execution": {
+        "Node": {
+            "target": "index.js"
+        }
+    }
+}

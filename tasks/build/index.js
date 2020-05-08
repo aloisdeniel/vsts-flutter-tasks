@@ -1,9 +1,10 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -46,6 +47,9 @@ function main() {
         }
         if (target === "all" || target === "aab") {
             yield buildAab(flutterPath, buildName, buildNumber, debugMode, buildFlavour, entryPoint);
+        }
+        if (target === "all" || target === "web") {
+            yield buildWeb(flutterPath);
         }
         task.setResult(task.TaskResult.Succeeded, "Application built");
     });
@@ -145,6 +149,18 @@ function buildIpa(flutter, simulator, codesign, buildName, buildNumber, debugMod
         var result = yield task.exec(flutter, args);
         if (result !== 0) {
             throw new Error("ios build failed");
+        }
+    });
+}
+function buildWeb(flutter) {
+    return __awaiter(this, void 0, void 0, function* () {
+        var args = [
+            "build",
+            "web"
+        ];
+        var result = yield task.exec(flutter, args);
+        if (result !== 0) {
+            throw new Error("web build failed");
         }
     });
 }

@@ -1,7 +1,7 @@
 {
     "manifestVersion": 1,
     "id": "flutter",
-    "version": "0.2.22",
+    "version": "0.2.31",
     "name": "Flutter",
     "description": "Flutter extension for Azure DevOps",
     "publisher": "aloisdeniel",
@@ -85,6 +85,16 @@
             ],
             "properties": {
                 "name": "tasks/test"
+            }
+        },
+        {
+            "id": "flutter-command",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "tasks/command"
             }
         }
     ]

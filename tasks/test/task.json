@@ -3,13 +3,13 @@
     "name": "FlutterTest",
     "friendlyName": "Flutter Test",
     "description": "Executes all tests for a Flutter project.",
-    "helpMarkdown": "For more information, take a look at the Flutter [documentation](https://flutter.io)",
+    "helpMarkdown": "Don't forget to insert a 'Flutter Install' task before. For more information, take a look at the Flutter [documentation](https://flutter.io)",
     "category": "Test",
     "author": "Aloïs Deniel",
     "version": {
         "Major": 0,
         "Minor": 2,
-        "Patch": 16
+        "Patch": 31
     },
     "instanceNameFormat": "Flutter Test",
     "inputs": [

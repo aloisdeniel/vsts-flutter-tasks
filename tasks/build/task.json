@@ -3,7 +3,7 @@
     "name": "FlutterBuild",
     "friendlyName": "Flutter Build",
     "description": "Build a Flutter application project.",
-    "helpMarkDown": "[More Information](https://github.com/aloisdeniel/vsts-flutter-tasks)",
+    "helpMarkDown": "Don't forget to insert a 'Flutter Install' task before. [More Information](https://github.com/aloisdeniel/vsts-flutter-tasks)",
     "category": "Build",
     "visibility": [
         "Build"
@@ -12,7 +12,7 @@
     "version": {
         "Major": 0,
         "Minor": 2,
-        "Patch": 21
+        "Patch": 31
     },
     "groups": [],
     "instanceNameFormat": "Flutter Build $(target)",

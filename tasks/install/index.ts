@@ -1,8 +1,10 @@
 import * as path from 'path';
 import * as os from 'os';
-import * as request from 'request-promise';
-import * as task from "vsts-task-lib/task";
-import * as tool from 'vsts-task-tool-lib/tool';
+import * as bent from 'bent';
+import * as task from "azure-pipelines-task-lib";
+import * as tool from 'azure-pipelines-tool-lib/tool';
+
+const getJSON = bent('json')
 
 const FLUTTER_TOOL_NAME: string = 'Flutter';
 const FLUTTER_EXE_RELATIVEPATH = 'flutter/bin';
@@ -14,30 +16,36 @@ async function main(): Promise<void> {
 
 	// 2. Building version spec
 	let channel = task.getInput('channel', true);
-	let version = task.getInput('version', true);
-	let semVer = task.getInput('customVersion', false);
-	if (version === 'latest' || semVer === "")
-		semVer = await findLatestSdkVersion(channel, arch);
-	let versionSpec = `${semVer}-${channel}`;
+	var version = task.getInput('version', true);
+	if (version === 'custom') {
+		version = task.getInput('customVersion', true);
+	}
+
+	let sdkInfo = await findSdkInformation(channel, arch, version);
 
 	// 3. Check if already available
-	task.debug(`Trying to get (${FLUTTER_TOOL_NAME},${versionSpec}, ${arch}) tool from local cache`);
-	let toolPath = tool.findLocalTool(FLUTTER_TOOL_NAME, versionSpec, arch);
+	task.debug(`Trying to get (${FLUTTER_TOOL_NAME},${sdkInfo.version}, ${arch}) tool from local cache`);
+	let toolPath = tool.findLocalTool(FLUTTER_TOOL_NAME, sdkInfo.version, arch);
 
 	if (!toolPath) {
 		// 4.1. Downloading SDK
-		await downloadAndCacheSdk(versionSpec, channel, arch);
+		await downloadAndCacheSdk(sdkInfo, channel, arch);
 
 		// 4.2. Verifying that tool is now available
-		task.debug(`Trying again to get (${FLUTTER_TOOL_NAME},${versionSpec}, ${arch}) tool from local cache`);
-		toolPath = tool.findLocalTool(FLUTTER_TOOL_NAME, versionSpec, arch);
+		task.debug(`Trying again to get (${FLUTTER_TOOL_NAME},${sdkInfo.version}, ${arch}) tool from local cache`);
+		toolPath = tool.findLocalTool(FLUTTER_TOOL_NAME, sdkInfo.version, arch);
 	}
 
-	// 5. Creating the environment variable
-	let fullFlutterPath: string = path.join(toolPath, FLUTTER_EXE_RELATIVEPATH);
-	task.debug(`Set ${FLUTTER_TOOL_PATH_ENV_VAR} with '${fullFlutterPath}'`);
-	task.setVariable(FLUTTER_TOOL_PATH_ENV_VAR, fullFlutterPath);
-	task.setResult(task.TaskResult.Succeeded, "Installed");
+	if (toolPath) {
+		// 5. Creating the environment variable
+		let fullFlutterPath: string = path.join(toolPath, FLUTTER_EXE_RELATIVEPATH);
+		task.debug(`Set ${FLUTTER_TOOL_PATH_ENV_VAR} with '${fullFlutterPath}'`);
+		task.setVariable(FLUTTER_TOOL_PATH_ENV_VAR, fullFlutterPath);
+		task.setResult(task.TaskResult.Succeeded, "Installed");
+	}
+	else {
+		task.setResult(task.TaskResult.Failed, "Download succedeeded but ToolPath not found.");
+	}
 }
 
 function findArchitecture() {
@@ -48,47 +56,42 @@ function findArchitecture() {
 	return "windows";
 }
 
-async function downloadAndCacheSdk(versionSpec: string, channel: string, arch: string): Promise<void> {
-	// Flutter had a 'v' prefix before the version number in the URL up until Flutter 1.17.
-	// From 1.17 and forward the v was dropped from the URL. This if-case adds backwards compatibility
-	//  with all Flutter versions from 2019 up until 1.17.
-	let versionPrefix = '';
-	for (let minor = 0; minor < 17; minor++) {
-		if (versionSpec.startsWith(`1.${minor}.`)) {
-			versionPrefix = 'v';
-			break;
-		}
+async function findSdkInformation(channel: string, arch: string, version: string): Promise<{ downloadUrl: string, version: string }> {
+	let releasesUrl = `https://storage.googleapis.com/flutter_infra/releases/releases_${arch}.json`;
+	let json = await getJSON(releasesUrl);
+	var current = null;
+	if (version === 'latest') {
+		let currentHash = json.current_release[channel];
+		current = json.releases.find((item: { hash: any; }) => item.hash === currentHash);
+	}
+	else {
+		current = json.releases.find((item: { version: any; }) => item.version === version);
 	}
 
-	// 1. Download SDK archive
-	let downloadUrl = `https://storage.googleapis.com/flutter_infra/releases/${channel}/${arch}/flutter_${arch}_${versionPrefix}${versionSpec}.zip`;
-	task.debug(`Starting download archive from '${downloadUrl}'`);
-	var bundleZip = await tool.downloadTool(downloadUrl);
-	task.debug(`Succeeded to download '${bundleZip}' archive from '${downloadUrl}'`);
+	if (current.version.startsWith('v')) {
+		current.version = current.version.substring(1);
+	}
 
-	// 2. Extracting SDK bundle
-	task.debug(`Extracting '${downloadUrl}' archive`);
-	var bundleDir = await tool.extractZip(bundleZip);
-	task.debug(`Extracted to '${bundleDir}' '${downloadUrl}' archive`);
-
-	// 3. Adding SDK bundle to cache
-	task.debug(`Adding '${bundleDir}' to cache (${FLUTTER_TOOL_NAME},${versionSpec}, ${arch})`);
-	tool.cacheDir(bundleDir, FLUTTER_TOOL_NAME, versionSpec, arch);
+	return {
+		version: current.version + '-' + channel,
+		downloadUrl: json.base_url + '/' + current.archive,
+	};
 }
 
-async function findLatestSdkVersion(channel: string, arch: string): Promise<string> {
-	var releasesUrl = `https://storage.googleapis.com/flutter_infra/releases/releases_${arch}.json`;
-	task.debug(`Finding latest version from '${releasesUrl}'`);
-	var body = await request.get(releasesUrl);
-	var json = JSON.parse(body);
-	var currentHash = json.current_release[channel];
-	task.debug(`Last version hash '${currentHash}'`);
-	var current = json.releases.find((item) => item.hash === currentHash);
-	var version = current.version;
+async function downloadAndCacheSdk(sdkInfo: { downloadUrl: string, version: string }, channel: string, arch: string): Promise<void> {
+	// 1. Download SDK archive
+	task.debug(`Starting download archive from '${sdkInfo.downloadUrl}'`);
+	var bundleZip = await tool.downloadTool(sdkInfo.downloadUrl);
+	task.debug(`Succeeded to download '${bundleZip}' archive from '${sdkInfo.downloadUrl}'`);
 
-	// Old versions started with a v prefix, remove it if present
-	if (version.startsWith('v')) version = version.substring(1);
-	return version;
+	// 2. Extracting SDK bundle
+	task.debug(`Extracting '${sdkInfo.downloadUrl}' archive`);
+	var bundleDir = await tool.extractZip(bundleZip);
+	task.debug(`Extracted to '${bundleDir}' '${sdkInfo.downloadUrl}' archive`);
+
+	// 3. Adding SDK bundle to cache
+	task.debug(`Adding '${bundleDir}' to cache (${FLUTTER_TOOL_NAME},${sdkInfo.version}, ${arch})`);
+	tool.cacheDir(bundleDir, FLUTTER_TOOL_NAME, sdkInfo.version, arch);
 }
 
 main().catch(error => {

@@ -1,10 +1,10 @@
 {
   "name": "flutterinstall",
-  "version": "0.2.13",
+  "version": "0.2.30",
   "description": "Flutter Install Build Task",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
@@ -17,9 +17,10 @@
   },
   "homepage": "https://github.com/aloisdeniel/vsts-flutter-tasks#readme",
   "dependencies": {
-    "vsts-task-lib": "2.7.0",
-    "vsts-task-tool-lib": "*",
-    "request-promise": "*",
-    "request": "*"
+    "azure-pipelines-tool-lib": "0.12.0",
+    "bent": "7.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^13.13.5"
   }
 }
