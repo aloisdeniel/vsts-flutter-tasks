@@ -46,7 +46,7 @@ function main() {
 }
 function publishTests(results) {
     return __awaiter(this, void 0, void 0, function* () {
-        var publisher = new task.TestPublisher("flutter");
+        var publisher = new task.TestPublisher("JUnit");
         task.debug(`results: ` + JSON.stringify(results));
         // 1. Generating Junit XML result file
         var junitResults = createJunitResults(results);

@@ -40,7 +40,7 @@ async function main(): Promise<void> {
 }
 
 async function publishTests(results: any) {
-    var publisher = new task.TestPublisher("flutter");
+    var publisher = new task.TestPublisher("JUnit");
 
     task.debug(`results: ` + JSON.stringify(results));
 

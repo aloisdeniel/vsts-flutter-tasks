@@ -67,6 +67,10 @@ async function findSdkInformation(channel: string, arch: string, version: string
 		current = json.releases.find((item: { version: any; }) => uniformizeVersion(item.version) === uniformizeVersion(version));
 	}
 
+	if (!current) {
+		throw Error(`No version ${version} found in release history.`);
+	}
+
 	current.version = uniformizeVersion(current.version);
 
 	return {

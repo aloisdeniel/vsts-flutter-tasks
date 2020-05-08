@@ -1,6 +1,6 @@
 {
   "name": "flutterinstall",
-  "version": "0.2.32",
+  "version": "0.2.35",
   "description": "Flutter Install Build Task",
   "main": "index.js",
   "scripts": {

@@ -69,6 +69,9 @@ function findSdkInformation(channel, arch, version) {
         else {
             current = json.releases.find((item) => uniformizeVersion(item.version) === uniformizeVersion(version));
         }
+        if (!current) {
+            throw Error(`No version ${version} found in release history.`);
+        }
         current.version = uniformizeVersion(current.version);
         return {
             version: current.version + '-' + channel,
