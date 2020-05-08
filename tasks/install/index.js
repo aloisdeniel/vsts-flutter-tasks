@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const path = require("path");
 const os = require("os");
+const https = require("https");
 const task = require("azure-pipelines-task-lib");
 const tool = require("azure-pipelines-tool-lib/tool");
 const FLUTTER_TOOL_NAME = 'Flutter';
@@ -49,6 +50,7 @@ function main() {
         }
     });
 }
+/// Finds current running architecture : macos, linux or windows.
 function findArchitecture() {
     if (os.platform() === 'darwin')
         return "macos";
@@ -65,11 +67,9 @@ function findSdkInformation(channel, arch, version) {
             current = json.releases.find((item) => item.hash === currentHash);
         }
         else {
-            current = json.releases.find((item) => item.version === version);
+            current = json.releases.find((item) => uniformizeVersion(item.version) === uniformizeVersion(version));
         }
-        if (current.version.startsWith('v')) {
-            current.version = current.version.substring(1);
-        }
+        current.version = uniformizeVersion(current.version);
         return {
             version: current.version + '-' + channel,
             downloadUrl: json.base_url + '/' + current.archive,
@@ -94,12 +94,43 @@ function downloadAndCacheSdk(sdkInfo, channel, arch) {
 main().catch(error => {
     task.setResult(task.TaskResult.Failed, error);
 });
+/// Removes the 'v' prefix from given version.
+function uniformizeVersion(version) {
+    if (version.startsWith('v')) {
+        return version.substring(1);
+    }
+    return version;
+}
+/// Sends an https request and parses the result as JSON.
 function getJSON(hostname, path) {
     return __awaiter(this, void 0, void 0, function* () {
-        // Calls through https.request seems to fail on host environment ...
-        let curl = task.which('curl', true);
-        var args = ['-s', `https://${hostname}${path}`];
-        let response = task.execSync(curl, args);
-        return JSON.parse(response.stdout);
+        return new Promise((resolve, reject) => {
+            let options = {
+                hostname: hostname,
+                port: 443,
+                path: path,
+                method: 'GET',
+            };
+            const req = https.request(options, res => {
+                let data = '';
+                // A chunk of data has been recieved.
+                res.on('data', (chunk) => {
+                    data += chunk;
+                });
+                // The whole response has been received. Print out the result.
+                res.on('end', () => {
+                    try {
+                        resolve(JSON.parse(data));
+                    }
+                    catch (e) {
+                        reject(e);
+                    }
+                });
+            });
+            req.on('error', error => {
+                reject(error);
+            });
+            req.end();
+        });
     });
 }

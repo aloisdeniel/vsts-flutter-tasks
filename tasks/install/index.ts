@@ -1,5 +1,6 @@
 import * as path from 'path';
 import * as os from 'os';
+import * as https from 'https';
 import * as task from "azure-pipelines-task-lib";
 import * as tool from 'azure-pipelines-tool-lib/tool';
 
@@ -45,6 +46,7 @@ async function main(): Promise<void> {
 	}
 }
 
+/// Finds current running architecture : macos, linux or windows.
 function findArchitecture() {
 	if (os.platform() === 'darwin')
 		return "macos";
@@ -56,17 +58,16 @@ function findArchitecture() {
 async function findSdkInformation(channel: string, arch: string, version: string): Promise<{ downloadUrl: string, version: string }> {
 	let json = await getJSON('storage.googleapis.com', `/flutter_infra/releases/releases_${arch}.json`);
 	var current = null;
+
 	if (version === 'latest') {
 		let currentHash = json.current_release[channel];
 		current = json.releases.find((item: { hash: any; }) => item.hash === currentHash);
 	}
 	else {
-		current = json.releases.find((item: { version: any; }) => item.version === version);
+		current = json.releases.find((item: { version: any; }) => uniformizeVersion(item.version) === uniformizeVersion(version));
 	}
 
-	if (current.version.startsWith('v')) {
-		current.version = current.version.substring(1);
-	}
+	current.version = uniformizeVersion(current.version);
 
 	return {
 		version: current.version + '-' + channel,
@@ -94,10 +95,47 @@ main().catch(error => {
 	task.setResult(task.TaskResult.Failed, error);
 });
 
+/// Removes the 'v' prefix from given version.
+function uniformizeVersion(version: string): string {
+	if (version.startsWith('v')) {
+		return version.substring(1);
+	}
+	return version;
+}
+
+/// Sends an https request and parses the result as JSON.
 async function getJSON(hostname: string, path: string): Promise<any> {
-	// Calls through https.request seems to fail on host environment ...
-	let curl: string = task.which('curl', true);
-	var args = ['-s', `https://${hostname}${path}`];
-	let response = task.execSync(curl, args);
-	return JSON.parse(response.stdout);
+	return new Promise<any>((resolve, reject) => {
+		let options: https.RequestOptions = {
+			hostname: hostname,
+			port: 443,
+			path: path,
+			method: 'GET',
+		};
+
+		const req = https.request(options, res => {
+			let data = '';
+
+			// A chunk of data has been recieved.
+			res.on('data', (chunk) => {
+				data += chunk;
+			});
+
+			// The whole response has been received. Print out the result.
+			res.on('end', () => {
+				try {
+					resolve(JSON.parse(data))
+				}
+				catch (e) {
+					reject(e);
+				}
+			});
+		})
+
+		req.on('error', error => {
+			reject(error);
+		})
+
+		req.end()
+	});
 }
