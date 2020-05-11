@@ -48,7 +48,7 @@ function main() {
         if (target === "all" || target === "aab") {
             yield buildAab(flutterPath, buildName, buildNumber, debugMode, buildFlavour, entryPoint);
         }
-        if (target === "all" || target === "web") {
+        if (target === "web") {
             yield buildWeb(flutterPath);
         }
         task.setResult(task.TaskResult.Succeeded, "Application built");

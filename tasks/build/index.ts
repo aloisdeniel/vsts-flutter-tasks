@@ -45,7 +45,7 @@ async function main(): Promise<void> {
         await buildAab(flutterPath, buildName, buildNumber, debugMode, buildFlavour, entryPoint);
     }
 
-    if (target === "all" || target === "web") {
+    if (target === "web") {
         await buildWeb(flutterPath);
     }
 
