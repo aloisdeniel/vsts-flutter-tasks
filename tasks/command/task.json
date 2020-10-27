@@ -24,6 +24,14 @@
             "required": false,
             "defaultValue": "",
             "helpMarkDown": "Arguments passed to the flutter command."
+        },
+        {
+            "name": "projectDirectory",
+            "type": "filePath",
+            "label": "Path to the project folder",
+            "defaultValue": ".",
+            "helpMarkDown": "The path to the project folder (which contains the `pubspec.yaml`)",
+            "required": true
         }
     ],
     "execution": {
