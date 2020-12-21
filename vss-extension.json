@@ -5,7 +5,7 @@
     "name": "Flutter",
     "description": "Flutter extension for Azure DevOps",
     "publisher": "rajatanantharam-funda",
-    "public": false,
+    "public": true,
     "targets": [
         {
             "id": "Microsoft.VisualStudio.Services"
