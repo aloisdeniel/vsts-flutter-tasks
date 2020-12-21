@@ -1,6 +1,6 @@
-import * as path from "path";
-import * as xml2js from "xml2js";
-import * as task from "azure-pipelines-task-lib/task";
+import * as path from "node_modules/path";
+import * as xml2js from "node_modules/xml2js";
+import * as task from "node_modules/azure-pipelines-task-lib/task";
 
 const FLUTTER_TOOL_PATH_ENV_VAR: string = 'FlutterToolPath';
 

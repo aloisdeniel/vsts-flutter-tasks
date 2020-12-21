@@ -1,8 +1,8 @@
-import * as path from 'path';
-import * as os from 'os';
-import * as https from 'https';
-import * as task from "azure-pipelines-task-lib";
-import * as tool from 'azure-pipelines-tool-lib/tool';
+import * as path from 'node_modules/path';
+import * as os from 'node_modules/os';
+import * as https from 'node_modules/https';
+import * as task from "node_modules/azure-pipelines-task-lib";
+import * as tool from 'node_modules/azure-pipelines-tool-lib/tool';
 
 const FLUTTER_TOOL_NAME: string = 'Flutter';
 const FLUTTER_EXE_RELATIVEPATH = 'flutter/bin';
