@@ -1,11 +1,11 @@
 {
     "manifestVersion": 1,
     "id": "flutter",
-    "version": "0.2.39.1",
+    "version": "0.2.39.5",
     "name": "Flutter",
     "description": "Flutter extension for Azure DevOps",
     "publisher": "rajatanantharam-funda",
-    "public": true,
+    "public": false,
     "targets": [
         {
             "id": "Microsoft.VisualStudio.Services"

@@ -21,7 +21,7 @@
             "name": "target",
             "type": "pickList",
             "label": "Target platform",
-            "defaultValue": "aar",
+            "defaultValue": "apk",
             "helpMarkDown": "The target platform of your application.",
             "required": true,
             "options": {
