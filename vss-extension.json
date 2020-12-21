@@ -61,7 +61,7 @@
     ],
     "contributions": [
         {
-            "id": "flutter-rajat-install",
+            "id": "flutter-install",
             "type": "ms.vss-distributed-task.task",
             "targets": [
                 "ms.vss-distributed-task.tasks"
@@ -71,7 +71,7 @@
             }
         },
         {
-            "id": "flutter-rajat-build",
+            "id": "flutter-build",
             "type": "ms.vss-distributed-task.task",
             "targets": [
                 "ms.vss-distributed-task.tasks"
@@ -81,7 +81,7 @@
             }
         },
         {
-            "id": "flutter-rajat-test",
+            "id": "flutter-test",
             "type": "ms.vss-distributed-task.task",
             "targets": [
                 "ms.vss-distributed-task.tasks"
@@ -91,7 +91,7 @@
             }
         },
         {
-            "id": "flutter-rajat-command",
+            "id": "flutter-command",
             "type": "ms.vss-distributed-task.task",
             "targets": [
                 "ms.vss-distributed-task.tasks"
