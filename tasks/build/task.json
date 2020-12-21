@@ -29,6 +29,7 @@
                 "ios": "iOS",
                 "apk": "Android (apk)",
                 "aab": "Android (aab)",
+                "aar": "Android (aar)",
                 "web": "Web"
             }
         },

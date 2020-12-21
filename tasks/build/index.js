@@ -48,6 +48,9 @@ function main() {
         if (target === "all" || target === "aab") {
             yield buildAab(flutterPath, buildName, buildNumber, debugMode, buildFlavour, entryPoint);
         }
+        if (target === "all" || target === "aar") {
+            yield buildAar(flutterPath, buildName, buildNumber, debugMode, buildFlavour, entryPoint);
+        }
         if (target === "web") {
             yield buildWeb(flutterPath);
         }
@@ -108,6 +111,33 @@ function buildAab(flutter, buildName, buildNumber, debugMode, buildFlavour, entr
         var result = yield task.exec(flutter, args);
         if (result !== 0) {
             throw new Error("aab build failed");
+        }
+    });
+}
+function buildAar(flutter, buildName, buildNumber, debugMode, buildFlavour, entryPoint) {
+    return __awaiter(this, void 0, void 0, function* () {
+        var args = [
+            "build",
+            "aar"
+        ];
+        if (debugMode) {
+            args.push("--debug");
+        }
+        if (buildName) {
+            args.push("--build-name=" + buildName);
+        }
+        if (buildNumber) {
+            args.push("--build-number=" + buildNumber);
+        }
+        if (buildFlavour) {
+            args.push("--flavor=" + buildFlavour);
+        }
+        if (entryPoint) {
+            args.push("--target=" + entryPoint);
+        }
+        var result = yield task.exec(flutter, args);
+        if (result !== 0) {
+            throw new Error("aar build failed");
         }
     });
 }
