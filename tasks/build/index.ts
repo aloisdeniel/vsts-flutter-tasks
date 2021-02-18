@@ -45,6 +45,11 @@ async function main(): Promise<void> {
         await buildAab(flutterPath, buildName, buildNumber, debugMode, buildFlavour, entryPoint);
     }
 
+    if (target === "all" || target === "aar") {
+        let targetPlatform = task.getInput('apkTargetPlatform', false);
+        await buildAar(flutterPath, targetPlatform, buildName, buildNumber, debugMode, buildFlavour, entryPoint);
+    }
+
     if (target === "web") {
         await buildWeb(flutterPath);
     }
@@ -121,6 +126,43 @@ async function buildAab(flutter: string, buildName?: string, buildNumber?: strin
 
     if (result !== 0) {
         throw new Error("aab build failed");
+    }
+}
+
+async function buildAar(flutter: string, targetPlatform?: string, buildName?: string, buildNumber?: string, debugMode?: boolean, buildFlavour?: string, entryPoint?: string) {
+
+    var args = [
+        "build",
+        "aar"
+    ];
+
+    args.push("--no-profile");
+    args.push("--no-debug");
+
+    if (targetPlatform) {
+        args.push("--target-platform=" + targetPlatform);
+    }
+
+    if (buildName) {
+        args.push("--build-name=" + buildName);
+    }
+
+    if (buildNumber) {
+        args.push("--build-number=" + buildNumber);
+    }
+
+    if (buildFlavour) {
+        args.push("--flavor=" + buildFlavour);
+    }
+
+    if (entryPoint) {
+        args.push("--target=" + entryPoint);
+    }
+
+    var result = await task.exec(flutter, args);
+
+    if (result !== 0) {
+        throw new Error("aar build failed");
     }
 }
 
