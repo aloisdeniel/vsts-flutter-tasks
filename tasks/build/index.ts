@@ -136,9 +136,8 @@ async function buildAar(flutter: string, targetPlatform?: string, buildName?: st
         "aar"
     ];
 
-    if (debugMode) {
-        args.push("--debug");
-    }
+    args.push("--no-profile");
+    args.push("--no-debug");
 
     if (targetPlatform) {
         args.push("--target-platform=" + targetPlatform);
