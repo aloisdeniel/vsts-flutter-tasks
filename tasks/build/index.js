@@ -39,7 +39,13 @@ function main() {
         if (target === "all" || target === "ios") {
             let targetPlatform = task.getInput('iosTargetPlatform', false);
             let codesign = task.getBoolInput('iosCodesign', false);
-            yield buildIpa(flutterPath, targetPlatform == "simulator", codesign, buildName, buildNumber, debugMode, buildFlavour, entryPoint);
+            yield buildIos(flutterPath, targetPlatform == "simulator", codesign, buildName, buildNumber, debugMode, buildFlavour, entryPoint);
+        }
+        if (target === "all" || target === "ipa") {
+            let targetPlatform = task.getInput('iosTargetPlatform', false);
+            let codesign = task.getBoolInput('iosCodesign', false);
+            let exportOptionsPlist = task.getInput('iosExportOptionsPlist', false);
+            yield buildIpa(flutterPath, targetPlatform == "simulator", codesign, buildName, buildNumber, debugMode, buildFlavour, entryPoint, exportOptionsPlist);
         }
         if (target === "all" || target === "apk") {
             let targetPlatform = task.getInput('apkTargetPlatform', false);
@@ -111,7 +117,7 @@ function buildAab(flutter, buildName, buildNumber, debugMode, buildFlavour, entr
         }
     });
 }
-function buildIpa(flutter, simulator, codesign, buildName, buildNumber, debugMode, buildFlavour, entryPoint) {
+function buildIos(flutter, simulator, codesign, buildName, buildNumber, debugMode, buildFlavour, entryPoint) {
     return __awaiter(this, void 0, void 0, function* () {
         var args = [
             "build",
@@ -149,6 +155,50 @@ function buildIpa(flutter, simulator, codesign, buildName, buildNumber, debugMod
         var result = yield task.exec(flutter, args);
         if (result !== 0) {
             throw new Error("ios build failed");
+        }
+    });
+}
+function buildIpa(flutter, simulator, codesign, buildName, buildNumber, debugMode, buildFlavour, entryPoint, exportOptionsPlist) {
+    return __awaiter(this, void 0, void 0, function* () {
+        var args = [
+            "build",
+            "ipa"
+        ];
+        if (debugMode) {
+            args.push("--debug");
+        }
+        if (simulator) {
+            args.push("--simulator");
+            if (!debugMode) {
+                args.push("--debug"); // simulator can only be built in debug
+            }
+        }
+        else if (codesign) {
+            args.push("--codesign");
+        }
+        else {
+            args.push("--no-codesign");
+        }
+        if (buildName) {
+            args.push("--build-name=" + buildName);
+        }
+        if (buildNumber) {
+            args.push("--build-number=" + buildNumber);
+        }
+        if (entryPoint) {
+            args.push("--target=" + entryPoint);
+        }
+        if (exportOptionsPlist) {
+            args.push("--export-options-plist=" + exportOptionsPlist);
+        }
+        if (!simulator) {
+            if (buildFlavour) {
+                args.push("--flavor=" + buildFlavour);
+            }
+        }
+        var result = yield task.exec(flutter, args);
+        if (result !== 0) {
+            throw new Error("ipa build failed");
         }
     });
 }
