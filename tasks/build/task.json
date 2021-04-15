@@ -26,7 +26,8 @@
             "required": true,
             "options": {
                 "all": "All (except 'Web').",
-                "ios": "iOS",
+                "ios": "iOS (app)",
+                "ipa": "iOS (ipa)",
                 "apk": "Android (apk)",
                 "aab": "Android (aab)",
                 "web": "Web"
@@ -108,7 +109,20 @@
             "defaultValue": "device",
             "required": false,
             "helpMarkDown": "Sets the target iOS platform",
-            "visibleRule": "target = ios",
+            "visibleRule": "target = ios || target = ipa",
+            "options": {
+                "device": "Device",
+                "simulator": "Simulator"
+            }
+        },
+        {
+            "name": "iosExportOptionsPlist",
+            "type": "string",
+            "label": "Export options plist",
+            "defaultValue": "",
+            "required": false,
+            "helpMarkDown": "Sets the --export-options-plist",
+            "visibleRule": "target = ipa",
             "options": {
                 "device": "Device",
                 "simulator": "Simulator"
@@ -121,7 +135,7 @@
             "defaultValue": "true",
             "required": false,
             "helpMarkDown": "Indicates whether the application bundle should be codesigned. **Warning: you must install a valid certificate before build with the `Install an Apple Certificate`task**",
-            "visibleRule": "target = ios"
+            "visibleRule": "target = ios || target = ipa"
         }
     ],
     "execution": {
