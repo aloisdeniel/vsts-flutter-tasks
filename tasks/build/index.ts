@@ -28,31 +28,33 @@ async function main(): Promise<void> {
     let buildNumber = task.getInput('buildNumber', false);
     let buildFlavour = task.getInput('buildFlavour', false);
     let entryPoint = task.getInput('entryPoint', false);
+    let additionalArguments = task.getInput('additionalArguments', false);
+
 
     // 5. Builds
     if (target === "all" || target === "ios") {
         let targetPlatform = task.getInput('iosTargetPlatform', false);
         let codesign = task.getBoolInput('iosCodesign', false);
-        await buildIpa(flutterPath, targetPlatform == "simulator", codesign, buildName, buildNumber, debugMode, buildFlavour, entryPoint);
+        await buildIpa(flutterPath, additionalArguments, targetPlatform == "simulator", codesign, buildName, buildNumber, debugMode, buildFlavour, entryPoint);
     }
 
     if (target === "all" || target === "apk") {
         let targetPlatform = task.getInput('apkTargetPlatform', false);
-        await buildApk(flutterPath, targetPlatform, buildName, buildNumber, debugMode, buildFlavour, entryPoint);
+        await buildApk(flutterPath, additionalArguments, targetPlatform, buildName, buildNumber, debugMode, buildFlavour, entryPoint);
     }
 
     if (target === "all" || target === "aab") {
-        await buildAab(flutterPath, buildName, buildNumber, debugMode, buildFlavour, entryPoint);
+        await buildAab(flutterPath, additionalArguments, buildName, buildNumber, debugMode, buildFlavour, entryPoint);
     }
 
     if (target === "web") {
-        await buildWeb(flutterPath);
+        await buildWeb(flutterPath, additionalArguments);
     }
 
     task.setResult(task.TaskResult.Succeeded, "Application built");
 }
 
-async function buildApk(flutter: string, targetPlatform?: string, buildName?: string, buildNumber?: string, debugMode?: boolean, buildFlavour?: string, entryPoint?: string) {
+async function buildApk(flutter: string, additionalArguments: string, targetPlatform?: string, buildName?: string, buildNumber?: string, debugMode?: boolean, buildFlavour?: string, entryPoint?: string) {
 
     var args = [
         "build",
@@ -83,6 +85,11 @@ async function buildApk(flutter: string, targetPlatform?: string, buildName?: st
         args.push("--target=" + entryPoint);
     }
 
+    if (additionalArguments) {
+        var splitted = additionalArguments.split(" ");
+        args.push(...splitted)
+    }
+
     var result = await task.exec(flutter, args);
 
     if (result !== 0) {
@@ -90,7 +97,7 @@ async function buildApk(flutter: string, targetPlatform?: string, buildName?: st
     }
 }
 
-async function buildAab(flutter: string, buildName?: string, buildNumber?: string, debugMode?: boolean, buildFlavour?: string, entryPoint?: string) {
+async function buildAab(flutter: string, additionalArguments: string, buildName?: string, buildNumber?: string, debugMode?: boolean, buildFlavour?: string, entryPoint?: string) {
 
     var args = [
         "build",
@@ -117,6 +124,11 @@ async function buildAab(flutter: string, buildName?: string, buildNumber?: strin
         args.push("--target=" + entryPoint);
     }
 
+    if (additionalArguments) {
+        var splitted = additionalArguments.split(" ");
+        args.push(...splitted)
+    }
+
     var result = await task.exec(flutter, args);
 
     if (result !== 0) {
@@ -124,7 +136,7 @@ async function buildAab(flutter: string, buildName?: string, buildNumber?: strin
     }
 }
 
-async function buildIpa(flutter: string, simulator?: boolean, codesign?: boolean, buildName?: string, buildNumber?: string, debugMode?: boolean, buildFlavour?: string, entryPoint?: string) {
+async function buildIpa(flutter: string, additionalArguments: string, simulator?: boolean, codesign?: boolean, buildName?: string, buildNumber?: string, debugMode?: boolean, buildFlavour?: string, entryPoint?: string) {
 
     var args = [
         "build",
@@ -167,18 +179,28 @@ async function buildIpa(flutter: string, simulator?: boolean, codesign?: boolean
         }
     }
 
+    if (additionalArguments) {
+        var splitted = additionalArguments.split(" ");
+        args.push(...splitted)
+    }
+
     var result = await task.exec(flutter, args);
     if (result !== 0) {
         throw new Error("ios build failed");
     }
 }
 
-async function buildWeb(flutter: string) {
+async function buildWeb(flutter: string, additionalArguments: string,) {
 
     var args = [
         "build",
         "web"
     ];
+
+    if (additionalArguments) {
+        var splitted = additionalArguments.split(" ");
+        args.push(...splitted)
+    }
 
     var result = await task.exec(flutter, args);
 

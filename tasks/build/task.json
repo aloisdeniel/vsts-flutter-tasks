@@ -12,7 +12,7 @@
     "version": {
         "Major": 0,
         "Minor": 2,
-        "Patch": 33
+        "Patch": 34
     },
     "groups": [],
     "instanceNameFormat": "Flutter Build $(target)",
@@ -122,6 +122,14 @@
             "required": false,
             "helpMarkDown": "Indicates whether the application bundle should be codesigned. **Warning: you must install a valid certificate before build with the `Install an Apple Certificate`task**",
             "visibleRule": "target = ios"
+        },
+        {
+            "name": "additionalArguments",
+            "type": "string",
+            "label": "Additional arguments",
+            "required": false,
+            "defaultValue": "",
+            "helpMarkDown": "Additional arguments passed to the flutter build command."
         }
     ],
     "execution": {

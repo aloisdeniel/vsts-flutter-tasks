@@ -37,6 +37,7 @@ Build the given mobile application project. You must call the `Flutter Install` 
 * _(Optional)_. Set `package number` (like `12`) that will override the manifest's one.
 * _(Optional)_. Set `build flavour` (like `development`) to specify a build flavour.  Must match Android Gradle flavor definition or XCode scheme.
 * _(Optional)_. Set `debug` if you wish to override the default release mode for the build.
+* _(Optional)_. Set `Additional arguments` if you wish to adds custom arguments to the `build` command.
 * __(Android)__._(Optional)_. Set `platform` for the Android target: `android-arm (default)`, `android-arm64`.
 * __(iOS)__._(Optional)_. Set `platform` for the iOS target: `device (default)`, `simulator`.
 * __(iOS)__._(Optional)_. Codesign the application bundle (only available on device builds, and activated by default). **Warning: you must install a valid certificate before build with the `Install an Apple Certificate`task**
