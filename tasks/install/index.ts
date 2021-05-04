@@ -82,12 +82,17 @@ async function findSdkInformation(channel: string, arch: string, version: string
 async function downloadAndCacheSdk(sdkInfo: { downloadUrl: string, version: string }, channel: string, arch: string): Promise<void> {
 	// 1. Download SDK archive
 	task.debug(`Starting download archive from '${sdkInfo.downloadUrl}'`);
-	var bundleZip = await tool.downloadTool(sdkInfo.downloadUrl);
-	task.debug(`Succeeded to download '${bundleZip}' archive from '${sdkInfo.downloadUrl}'`);
+	var bundleArchive = await tool.downloadTool(sdkInfo.downloadUrl);
+	task.debug(`Succeeded to download '${bundleArchive}' archive from '${sdkInfo.downloadUrl}'`);
 
 	// 2. Extracting SDK bundle
 	task.debug(`Extracting '${sdkInfo.downloadUrl}' archive`);
-	var bundleDir = await tool.extractZip(bundleZip);
+	var bundleDir;
+	if (sdkInfo.downloadUrl.endsWith('tar.xz')) {
+		bundleDir = await tool.extractTar(bundleArchive);
+	} else {
+		bundleDir = await tool.extractZip(bundleArchive);
+	}
 	task.debug(`Extracted to '${bundleDir}' '${sdkInfo.downloadUrl}' archive`);
 
 	// 3. Adding SDK bundle to cache
