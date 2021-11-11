@@ -60,7 +60,7 @@ function findArchitecture() {
 }
 function findSdkInformation(channel, arch, version) {
     return __awaiter(this, void 0, void 0, function* () {
-        let json = yield getJSON('storage.googleapis.com', `/flutter_infra/releases/releases_${arch}.json`);
+        let json = yield getJSON('storage.googleapis.com', `/flutter_infra_release/releases/releases_${arch}.json`);
         var current = null;
         if (version === 'latest') {
             let currentHash = json.current_release[channel];
