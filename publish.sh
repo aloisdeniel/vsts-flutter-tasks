@@ -1,14 +1,17 @@
 # Build TS
 npm install -g typescript
-cd ./tasks/test
+cd ./tasks/integration_test
 npm install
-tsc 
+tsc
+cd ../tasks/test
+npm install
+tsc
 cd ../install
 npm install
 tsc
 cd ../build
 npm install
-tsc 
+tsc
 cd ../../
 
 # Create extension

@@ -1,0 +1,24 @@
+{
+  "name": "fluttertest",
+  "version": "1.2.32",
+  "description": "Flutter Test Task",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aloisdeniel/vsts-flutter-tasks.git"
+  },
+  "author": "Aloïs Deniel",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aloisdeniel/vsts-flutter-tasks/issues"
+  },
+  "homepage": "https://github.com/aloisdeniel/vsts-flutter-tasks#readme",
+  "dependencies": {
+    "azure-pipelines-tool-lib": "0.12.0",
+    "@types/xml2js": "0.4.5",
+    "xml2js": "0.4.23"
+  }
+}
