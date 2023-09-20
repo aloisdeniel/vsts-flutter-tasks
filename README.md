@@ -1,3 +1,5 @@
+> As I'm not using Microsoft tools anymore I won't maintain this repository in the future. If someone wants the repository ownership please contact me on [X](https://twitter.com/aloisdeniel).
+
 # Flutter for Azure DevOps
 
 [Flutter](http://flutter.io) build task for [Azure DevOps](https://azure.microsoft.com/fr-fr/services/devops/).
