@@ -56,7 +56,7 @@ function findArchitecture() {
 }
 
 async function findSdkInformation(channel: string, arch: string, version: string): Promise<{ downloadUrl: string, version: string }> {
-	let json = await getJSON('storage.googleapis.com', `/flutter_infra/releases/releases_${arch}.json`);
+	let json = await getJSON('storage.googleapis.com', `/flutter_infra_release/releases/releases_${arch}.json`);
 	var current = null;
 
 	if (version === 'latest') {
