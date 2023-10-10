@@ -1,0 +1,16 @@
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: TfxInstaller@2
+  inputs:
+    version: 'v0.6.x'
+
+- task: PublishAzureDevOpsExtension@2
+  inputs:
+    connectTo: 'VsTeam'
+    connectedServiceName: 'Azure DevOps Marketplace'
+    fileType: 'manifest'
+    publisherId: 'aloisdeniel'
+    extensionVisibility: 'public'
+    extensionPricing: 'free'
