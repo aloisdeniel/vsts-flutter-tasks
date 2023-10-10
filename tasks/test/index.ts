@@ -24,9 +24,10 @@ async function main(): Promise<void> {
     let testPlainName = task.getInput('testPlainName', false);
     let updateGoldens = task.getBoolInput('updateGoldens', false);
     let concurrency = task.getInput('concurrency', false);
+    let coverage = task.getInput('coverage', false);
 
     // 5. Running tests
-    var results = await runTests(flutterPath, (concurrency ? Number(concurrency) : null), updateGoldens, testName, testPlainName);
+    var results = await runTests(flutterPath, (concurrency ? Number(concurrency) : null), updateGoldens, testName, testPlainName, coverage);
 
     // 6. Publishing tests
     await publishTests(results);
@@ -55,7 +56,7 @@ async function publishTests(results: any) {
     publisher.publish(xmlPath, 'false', "", "", "", 'true', "Flutter");
 }
 
-async function runTests(flutter: string, concurrency?: number, updateGoldens?: boolean, name?: string, plainName?: string) {
+async function runTests(flutter: string, concurrency?: number, updateGoldens?: boolean, name?: string, plainName?: string, coverage? : boolean) {
     let testRunner = task.tool(flutter);
     testRunner.arg(['test', '--pub']);
 
@@ -73,6 +74,10 @@ async function runTests(flutter: string, concurrency?: number, updateGoldens?: b
 
     if (concurrency) {
         testRunner.arg("--concurrency=" + concurrency);
+    }
+
+    if (coverage) {
+        testRunner.arg("--coverage");
     }
 
     var currentSuite: any = null;
